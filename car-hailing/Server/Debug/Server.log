@@ -3,6 +3,6 @@ D:\我的电脑\Desktop\set\car-hailing\Server\ServerDlg.cpp(204,22): warning C4
 D:\我的电脑\Desktop\set\car-hailing\Server\ServerDlg.cpp(204,3): warning C4996: 'swprintf': function has been changed to conform with the ISO C standard, adding an extra character count parameter. To use the traditional Microsoft version, set _CRT_NON_CONFORMING_SWPRINTFS.
 D:\我的电脑\Desktop\set\car-hailing\Server\ServerDlg.cpp(172,12): warning C4101: “s”: 未引用的局部变量
 D:\我的电脑\Desktop\set\car-hailing\Server\ServerDlg.cpp(170,10): warning C4101: “pic”: 未引用的局部变量
-D:\我的电脑\Desktop\set\car-hailing\Server\ServerDlg.cpp(223,30): warning C4477: “swprintf”: 格式字符串“%s”需要类型“wchar_t *”的参数，但可变参数 1 拥有了类型“CString”
-D:\我的电脑\Desktop\set\car-hailing\Server\ServerDlg.cpp(223,12): warning C4996: 'swprintf': function has been changed to conform with the ISO C standard, adding an extra character count parameter. To use the traditional Microsoft version, set _CRT_NON_CONFORMING_SWPRINTFS.
+D:\我的电脑\Desktop\set\car-hailing\Server\ServerDlg.cpp(225,30): warning C4477: “swprintf”: 格式字符串“%s”需要类型“wchar_t *”的参数，但可变参数 1 拥有了类型“CString”
+D:\我的电脑\Desktop\set\car-hailing\Server\ServerDlg.cpp(225,12): warning C4996: 'swprintf': function has been changed to conform with the ISO C standard, adding an extra character count parameter. To use the traditional Microsoft version, set _CRT_NON_CONFORMING_SWPRINTFS.
   Server.vcxproj -> D:\我的电脑\Desktop\set\car-hailing\Debug\Server.exe

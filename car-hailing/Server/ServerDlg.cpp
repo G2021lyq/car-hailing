@@ -203,6 +203,8 @@ void CServerDlg::ParserPkt(MySocket* from)
 		// 填写ShowBuff信息
 		swprintf(ShowBuff, L" %s 进入聊室\r\n", from->m_Player);
 	}
+
+
 	// 无论怎样都将信息给出去
 	Append(ShowBuff);
 

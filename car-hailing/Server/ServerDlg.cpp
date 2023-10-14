@@ -167,7 +167,7 @@ void CServerDlg::ParserPkt(MySocket* from)
 
 	int len;					//记录发送长度
 	int item;					//列表序号
-	MySocket* s1;				//发送一般消息的Socket		
+	MySocket* s1;				//发送一般消息的Socket
 	MySocket* s;				//发送用户进入信息的Socket
 
 	// 读取数据
@@ -178,11 +178,12 @@ void CServerDlg::ParserPkt(MySocket* from)
 	{
 		CString ipaddr;             // IP字符串
 		UINT port;                 // 端口号
-
 		// 与该套接字链接的对方的IP地址、端口号
 		from->GetPeerName(ipaddr, port);
 		// 与SOCKET通信的用户的称谓
 		from->m_Player = SendBuff + 1; // 名称的记录会在为空时停止
+
+		MessageBox(from->m_Player);
 
 		// 向列表中插入一项，使用了锁的知识
 		m_csList.Lock();
@@ -199,12 +200,18 @@ void CServerDlg::ParserPkt(MySocket* from)
 
 		// 填写ShowBuff信息
 		swprintf(ShowBuff, L" %s 连接成功\r\n", static_cast<const wchar_t*>(from->m_Player));
+
+		//发送反馈信息
+		//from->Send(L"你好吗？", 100);
+
+		SendBuff[0] = 0x00;//0x00是协议类型，表示一个测试信息
+		swprintf(SendBuff + 1, L"服务器收到了信息");
+		from->Send(SendBuff, 2048);
 	}
 
 
 	// 无论怎样都将信息传给edit里面
 	Append(ShowBuff);
-
 }
 
 void CServerDlg::Append(wchar_t* msg)
@@ -247,8 +254,8 @@ void CServerDlg::OnBnClickedButtonStart()
 	BOOL isTrue = m_socket.Create(0x8123, SOCK_STREAM);
 	if (isTrue)
 	{
-		m_socket.Listen();
-		AfxMessageBox(TEXT("开启服务器成功！"));
+		if (m_socket.Listen())
+			AfxMessageBox(TEXT("开启服务器成功！"));
 		GetDlgItem(IDC_BUTTON_Start)->EnableWindow(FALSE);
 		return;
 	}

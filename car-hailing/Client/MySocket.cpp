@@ -1,27 +1,17 @@
-﻿// MySocket.cpp: 实现文件
-//
+﻿#include "pch.h"
 
-#include "pch.h"
-#include "Client.h"
 #include "MySocket.h"
 
 
-// MySocket
-
 MySocket::MySocket()
 {
-	pWnd = NULL;
+	pWnd = nullptr;
+	m_msgTotal = 0;
 }
+
 
 MySocket::~MySocket()
 {
-}
-
-
-// MySocket 成员函数
-
-void MySocket::AttachCWnd(CWnd* cwnd) {
-	pWnd = cwnd;
 }
 
 
@@ -35,11 +25,16 @@ void MySocket::OnClose(int nErrorCode)
 }
 
 
-int MySocket::Receive(void* lpBuf, int nBufLen, int nFlags)
+void MySocket::OnReceive(int nErrorCode)
 {
 	// TODO: 在此添加专用代码和/或调用基类
+	m_msgTotal++;
 	if (pWnd) {
 		pWnd->SendMessage(SOCKET_EVENT, (WPARAM)this, RETURN);
 	}
-	return CSocket::Receive(lpBuf, nBufLen, nFlags);
+	CSocket::OnReceive(nErrorCode);
+}
+
+void MySocket::AttachCWnd(CWnd* cwnd) {
+	pWnd = cwnd;
 }

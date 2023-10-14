@@ -45,14 +45,13 @@ public:
 
 protected:  // 控件条嵌入成员
 	CStatusBar        m_wndStatusBar;
-
 	//切分窗口对象
 private:
 	CSplitterWnd m_spliter;
 	//自定义消息处理函数
 private:
 	afx_msg LRESULT OnMyChange(WPARAM wParam, LPARAM lParam);
-
+	afx_msg LRESULT OnSocket(WPARAM wParam, LPARAM lParam);//Socket的消息响应
 	// 生成的消息映射函数
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);

@@ -1,15 +1,4 @@
-﻿  pch.cpp
-  CCarContinueDlg.cpp
-  CCarServiceDlg.cpp
-  CDisplayView.cpp
-  Client.cpp
-  ClientDoc.cpp
-  ClientView.cpp
-  CLoginDlg.cpp
-  CSelectView.cpp
-  CUserDlg.cpp
-  MainFrm.cpp
-D:\我的电脑\文档\GitHub\car-hailing\car-hailing\Client\MainFrm.cpp(185,2): warning C4996: 'wcsncpy': This function or variable may be unsafe. Consider using wcsncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  MySocket.cpp
-  正在生成代码...
-  Client.vcxproj -> D:\我的电脑\文档\GitHub\car-hailing\car-hailing\Debug\Client.exe
+﻿  MainFrm.cpp
+D:\我的电脑\Desktop\car-hailing-main\car-hailing\Client\MainFrm.cpp(117,15): warning C4101: “info”: 未引用的局部变量
+D:\我的电脑\Desktop\car-hailing-main\car-hailing\Client\MainFrm.cpp(118,9): warning C4101: “lvitem”: 未引用的局部变量
+  Client.vcxproj -> D:\我的电脑\Desktop\car-hailing-main\car-hailing\Debug\Client.exe

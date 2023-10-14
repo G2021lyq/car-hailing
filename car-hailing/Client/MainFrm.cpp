@@ -31,6 +31,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_MESSAGE(NM_C, OnMyChange)
 
 	ON_MESSAGE(NM_OK, OnMyChange)
+
+	ON_MESSAGE(SOCKET_EVENT, OnSocket)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -105,6 +107,36 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
+LRESULT CMainFrame::OnSocket(WPARAM wParam, LPARAM lParam)
+{
+
+	wchar_t	pkt[2048];
+	memset(pkt, 0, 2048);
+	MySocket* sock = (MySocket*)wParam;
+
+	LVFINDINFO   info;
+	LVITEM lvitem;
+
+	switch (lParam)
+	{
+	case RETURN:
+		//接收到信息
+		m_socket.Receive(pkt, 2048);
+		//判断协议
+		switch (pkt[0])
+		{
+		case 0x00://0x00是一个测试的信息
+			MessageBox(pkt + 1);
+			break;
+		}
+		break;
+	case CLOSE:
+		MessageBox(L"服务器已关闭!");
+		break;
+	}
+	return LRESULT();
+}
+
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
@@ -118,6 +150,12 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators) / sizeof(UINT));
 
 	//TODO::
+	// 客户端创建套接字并连接到服务器
+
+// 	m_socket.AttachCWnd(this);
+// 	m_socket.Create();
+// 	m_socket.Connect((LPCTSTR)L"127.0.0.1", 0x8123	return 0;
+
 	//设置图标
 	SetClassLong(m_hWnd, GCL_HICON,
 		(LONG)AfxGetApp()->LoadIconW(IDI_ICON_WIN));
@@ -143,62 +181,51 @@ tryagain:
 		goto tryagain;
 	}
 
+	//填写了信息，尝试与服务器连接
 	CString msg;
 	DWORD err;
 
 	//把SOCKET与对话框联系起来，SOCKET有消息就会通知本对话
 	m_socket.AttachCWnd(this);
-
-	if (m_socket.Create() == FALSE)			//自动完成SOCKET的初始化、设置
+	//自动完成SOCKET的初始化、设置
+	if (m_socket.Create() == FALSE)
 	{
 		err = GetLastError();
-		msg.Format(_T("创建Socket失败!\r\n错误代码:%d"), err);//sprintf相同
-
+		msg.Format(_T("创建Socket失败!\r\n错误代码:%d"), err);
 		//输出错误信息并结束
 		MessageBox(msg);
 		PostQuitMessage(0);           //退出
 		return TRUE;
 	}
-
 	//连接到服务器计算机，端口为0x8123的程序
 	if (m_socket.Connect(cLoginDlg.m_ipAddr, 0x8123) == FALSE)
 	{
 		//如果连接成功，对方创建新的SOCKET，新的端口号，就与新的SOCKET，新的端口号通信。
 		err = GetLastError();
 		msg.Format(_T("连接服务器失败! \r\n错误代码:%d"), err);
-
 		//输出错误信息并结束
 		MessageBox(msg);
 		PostQuitMessage(0);           //退出
 		return TRUE;
 	}
 
-
 	Sleep(1000);
 	// 代码运行到这里，就说明已经和服务器连接上了，现在向服务器发送一条协议信息，“XXX已经登录”
-
 	// 构造协议信息
 	// 登入聊天室,给服务器发送用户登录信息
 	wchar_t pkt[200];
 	pkt[0] = 0x11; // 默认pkt[0]为协议信息
-
-	// 定义0x11为登录所发送的信息
-	wcsncpy(pkt + 1, cLoginDlg.m_username, 98); // 减去一个位置以留给字符串零终止符
-
-	// 添加字符串零终止符
-	pkt[99] = L'\0';
-
+	// 定义0x11为登录所发送的信息,并补充具体传递的信息
+	wsprintf(pkt + 1, cLoginDlg.m_username);
 	// 发送
 	int l = wcslen(pkt) + 1;
-	if (m_socket.Send(pkt, l) == FALSE)
+	if (m_socket.Send(pkt, 200) == FALSE)
 	{
 		MessageBox(_T("发送数据错误!"));
 	}
 
-
 	//设置标题
 	SetTitle(__TEXT("网约车服务"));
-
 	//设置窗口大小
 	MoveWindow(0, 0, 1080, 720);
 	CenterWindow();

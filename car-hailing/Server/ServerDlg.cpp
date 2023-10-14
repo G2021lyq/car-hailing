@@ -156,23 +156,22 @@ LRESULT CServerDlg::OnSocket(WPARAM wParam, LPARAM lParam)
 
 void CServerDlg::ParserPkt(MySocket* from)
 {
-	wchar_t SendBuff[4096];     // 发送缓冲
-	wchar_t ShowBuff[4096];     // 显示缓冲
+	wchar_t SendBuff[2048];     // 发送缓冲
+	wchar_t ShowBuff[2048];     // 显示缓冲
 	wchar_t nbuf[100];         // 临时缓冲区
 
 	// 初始化各缓冲区
-	wmemset(SendBuff, 0, 4096);
-	wmemset(ShowBuff, 0, 4096);
+	wmemset(SendBuff, 0, 2048);
+	wmemset(ShowBuff, 0, 2048);
 	wmemset(nbuf, 0, 100);
 
 	int len;					//记录发送长度
 	int item;					//列表序号
-	wchar_t pic[2];             // 图像序号
 	MySocket* s1;				//发送一般消息的Socket		
 	MySocket* s;				//发送用户进入信息的Socket
 
 	// 读取数据
-	len = from->Receive(SendBuff, 4096);
+	len = from->Receive(SendBuff, 2048);
 
 	// 0x11---服务器接收用户进入聊天室
 	if (SendBuff[0] == 0x11)
@@ -187,25 +186,23 @@ void CServerDlg::ParserPkt(MySocket* from)
 
 		// 向列表中插入一项，使用了锁的知识
 		m_csList.Lock();
-
-		// 列表中插入一行，返回插入的行号
+		// 插入到列表中（该列表存储所有的Socket），返回插入的行号
 		item = m_list.InsertItem(0, (LPCTSTR)(SendBuff + 1));
 		// 保存该SOCKET指针到该行的附加数据域
 		m_list.SetItemData(item, (DWORD)from);
 		// 设置第2列，IP地址列
 		m_list.SetItemText(item, 1, ipaddr);
-
 		m_csList.Unlock();
 
 		// s1中保存新加入用户的socket
 		s1 = (MySocket*)m_list.GetItemData(item);
 
 		// 填写ShowBuff信息
-		swprintf(ShowBuff, L" %s 进入聊室\r\n", from->m_Player);
+		swprintf(ShowBuff, L" %s 连接成功\r\n", static_cast<const wchar_t*>(from->m_Player));
 	}
 
 
-	// 无论怎样都将信息给出去
+	// 无论怎样都将信息传给edit里面
 	Append(ShowBuff);
 
 }
@@ -222,28 +219,25 @@ void CServerDlg::ClosePlayer(MySocket* from)
 	int i, msg_len;
 	wchar_t out_msg[200];
 
-	msg_len = swprintf(out_msg, L"%s 退出聊天室\r\n", from->m_Player) + 1;
+	// 填写out_msg信息
+	swprintf(out_msg, L"%s 退出聊天室\r\n", static_cast<const wchar_t*>(from->m_Player));
+	msg_len = wcslen(out_msg) + 1;
 
-	wchar_t nbuf[100];
-
-	//每当使用csList时都要使用锁
+	//去列表中找到这个用户，把它删除
 	m_csList.Lock();
 	for (i = 0; i < m_list.GetItemCount(); i++)
 	{
 		if (m_list.GetItemData(i) == (DWORD)from)
 		{
 			delete from;
-			nbuf[0] = 0x41; // 第一个字节表示类型，加入，退出，私聊群发
-			m_list.GetItemText(i, 0, nbuf + 1, 100);
-
 			m_list.DeleteItem(i);
 			break;
 		}
 	}
 	m_csList.Unlock();
 
+	//不论如何，将信息写入edit里面
 	Append(out_msg);
-
 }
 
 void CServerDlg::OnBnClickedButtonStart()

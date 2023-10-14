@@ -13,6 +13,8 @@
 
 #define NM_OK (WM_USER+2024)
 
+#define NM_TEST_SOCKET (WM_USER+2025)
+
 
 #include "MySocket.h"
 
@@ -59,6 +61,8 @@ protected:
 
 	//分割来着
 	virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
+	//处理接收消息
+	void ParserPkt(MySocket* m_server);
 };
 
 

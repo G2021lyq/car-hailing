@@ -1,4 +1,1 @@
-﻿  MainFrm.cpp
-D:\我的电脑\Desktop\car-hailing-main\car-hailing\Client\MainFrm.cpp(117,15): warning C4101: “info”: 未引用的局部变量
-D:\我的电脑\Desktop\car-hailing-main\car-hailing\Client\MainFrm.cpp(118,9): warning C4101: “lvitem”: 未引用的局部变量
-  Client.vcxproj -> D:\我的电脑\Desktop\car-hailing-main\car-hailing\Debug\Client.exe
+﻿  Client.vcxproj -> D:\我的电脑\文档\GitHub\car-hailing\car-hailing\Debug\Client.exe

@@ -109,9 +109,6 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 
 LRESULT CMainFrame::OnSocket(WPARAM wParam, LPARAM lParam)
 {
-
-	wchar_t	pkt[2048];
-	memset(pkt, 0, 2048);
 	MySocket* sock = (MySocket*)wParam;
 
 	LVFINDINFO   info;
@@ -120,21 +117,37 @@ LRESULT CMainFrame::OnSocket(WPARAM wParam, LPARAM lParam)
 	switch (lParam)
 	{
 	case RETURN:
-		//接收到信息
-		m_socket.Receive(pkt, 2048);
-		//判断协议
-		switch (pkt[0])
-		{
-		case 0x00://0x00是一个测试的信息
-			MessageBox(pkt + 1);
-			break;
-		}
+		ParserPkt(sock);
 		break;
 	case CLOSE:
 		MessageBox(L"服务器已关闭!");
 		break;
 	}
 	return LRESULT();
+}
+void CMainFrame::ParserPkt(MySocket* m_server) {
+	wchar_t	pkt[2048];
+	wchar_t GetBuff[2048];
+	wmemset(pkt, 0, 2048);
+	wmemset(GetBuff, 0, 2048);
+
+	m_socket.Receive(pkt, 2048);
+	//判断协议
+	switch (pkt[0])
+	{
+	case 0x00://0x00是一个测试的信息
+		MessageBox(pkt + 1);
+		break;
+	case 0x10:
+		wsprintf(GetBuff, L"%s", pkt + 1);
+
+		//发送一个自定义消息，从而告诉CUserDlg去执行相应的业务
+		// 获取指向 CUserDlg 的指针
+		CUserDlg* pUserDlg = dynamic_cast<CUserDlg*>(m_spliter.GetPane(0, 1));
+		// 发送自定义消息给 CUserDlg
+		pUserDlg->PostMessage(NM_TEST_SOCKET, (WPARAM)NM_TEST_SOCKET, reinterpret_cast<LPARAM>(GetBuff));
+		break;
+	}
 }
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -150,11 +163,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators) / sizeof(UINT));
 
 	//TODO::
-	// 客户端创建套接字并连接到服务器
-
-// 	m_socket.AttachCWnd(this);
-// 	m_socket.Create();
-// 	m_socket.Connect((LPCTSTR)L"127.0.0.1", 0x8123	return 0;
 
 	//设置图标
 	SetClassLong(m_hWnd, GCL_HICON,

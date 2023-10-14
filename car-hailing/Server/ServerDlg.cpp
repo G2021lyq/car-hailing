@@ -173,9 +173,9 @@ void CServerDlg::ParserPkt(MySocket* from)
 	// 读取数据
 	len = from->Receive(SendBuff, 2048);
 
-	// 0x11---服务器接收用户进入聊天室
-	if (SendBuff[0] == 0x11)
-	{
+
+	if (SendBuff[0] == 0x11) {
+		// 0x11---服务器接收用户进入聊天室
 		CString ipaddr;             // IP字符串
 		UINT port;                 // 端口号
 		// 与该套接字链接的对方的IP地址、端口号
@@ -199,16 +199,42 @@ void CServerDlg::ParserPkt(MySocket* from)
 		s1 = (MySocket*)m_list.GetItemData(item);
 
 		// 填写ShowBuff信息
-		swprintf(ShowBuff, L" %s 连接成功\r\n", static_cast<const wchar_t*>(from->m_Player));
+		wsprintf(ShowBuff, L" %s 连接成功\r\n", static_cast<const wchar_t*>(from->m_Player));
 
 		//发送反馈信息
 		//from->Send(L"你好吗？", 100);
 
 		SendBuff[0] = 0x00;//0x00是协议类型，表示一个测试信息
-		swprintf(SendBuff + 1, L"服务器收到了信息");
+		wsprintf(SendBuff + 1, L"服务器收到了信息");
 		from->Send(SendBuff, 2048);
 	}
+	else if (SendBuff[0] == 0x10)
+	{
+		MessageBox(L"收到测试信息");
 
+		//该协议为测试Socket的协议
+		wsprintf(SendBuff, L"%s", SendBuff + 1);
+
+		//对于信息进行处理，我这里省略没有写
+		/*
+		* XXXXXXXXXXXXXXXXXX
+		* XXXXXXXXXXXXXXXXXX
+		*/
+
+		wchar_t newMessage[2048];
+		wmemset(newMessage, 0, 2048);
+		newMessage[0] = 0x10;
+		wsprintf(newMessage + 1, L"知道了，%s-你走吧", from->m_Player);
+
+		if (from->Send(newMessage, 2048) == SOCKET_ERROR) {
+			//每次写Send都应该进行错误处理
+			MessageBox(L"服务器发送反馈信息失败！！");
+		}
+
+		//整理ShowBuff，会写到服务器的编辑框中
+		wsprintf(ShowBuff, L" %s发送了:%s\r\n 发送给%s:%s\r\n",
+			from->m_Player, SendBuff, from->m_Player, newMessage);
+	}
 
 	// 无论怎样都将信息传给edit里面
 	Append(ShowBuff);

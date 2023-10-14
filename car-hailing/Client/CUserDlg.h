@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-
+#define NM_TEST_SOCKET (WM_USER+2025)
 
 // CUserDlg 窗体视图
 
@@ -27,6 +27,12 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
+public:
+	// 展示Server返回的反馈信息
+	CEdit m_ShowMessage;
+	afx_msg void OnBnClickedButton2();
+	//自定义消息处理函数
+	afx_msg LRESULT OnMyChange(WPARAM wParam, LPARAM lParam);
 };
 
 

@@ -14,7 +14,7 @@ class CLoginDlg : public CDialogEx
 public:
 	CLoginDlg(CWnd* pParent = nullptr);   // 标准构造函数
 	virtual ~CLoginDlg();
-
+	int type;//窗口产生的类型：登录、注册和找回密码，分别是0/1/2
 	// 对话框数据
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_DIALOG_Login };
@@ -34,4 +34,6 @@ public:
 	MySocket m_socket;
 	CString m_username;
 	afx_msg void OnBnClickedButton3();
+	afx_msg void OnBnClickedButton1();
+	afx_msg void OnBnClickedButton2();
 };

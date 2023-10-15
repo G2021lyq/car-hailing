@@ -33,6 +33,7 @@ public:
 	afx_msg void OnBnClickedButton2();
 	//自定义消息处理函数
 	afx_msg LRESULT OnMyChange(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnEnChangeEdit2();
 };
 
 

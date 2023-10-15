@@ -14,6 +14,7 @@
 
 #include "CSelectView.h"
 #include "CDisplayView.h"
+#include "CRegisterDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -178,6 +179,24 @@ tryagain:
 							   //退出程序
 		PostQuitMessage(0);
 		return TRUE;
+	}
+	if (cLoginDlg.type == 1) {//实现注册逻辑
+		CRegisterDlg cRegisterDlg;
+		if (cRegisterDlg.DoModal() != IDOK) {//没有按确认建
+							   //退出程序
+			PostQuitMessage(0);
+			return TRUE;
+		}
+		//输入信息校验
+		if (cRegisterDlg.m_Email.IsEmpty()) {
+			MessageBox(TEXT("请填写对应的邮箱"));
+			goto tryagain;
+		}
+		if (cRegisterDlg.m_Password.IsEmpty()) {
+			MessageBox(TEXT("请填写对应的密码"));
+			goto tryagain;
+		}
+		goto tryagain;
 	}
 	//输入信息校验
 	if (wcslen(cLoginDlg.m_ipAddr) == 0) {

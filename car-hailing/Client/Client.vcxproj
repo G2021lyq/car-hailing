@@ -190,6 +190,7 @@
     <ClInclude Include="ClientDoc.h" />
     <ClInclude Include="ClientView.h" />
     <ClInclude Include="CLoginDlg.h" />
+    <ClInclude Include="CRegisterDlg.h" />
     <ClInclude Include="CSelectView.h" />
     <ClInclude Include="CUserDlg.h" />
     <ClInclude Include="framework.h" />
@@ -207,6 +208,7 @@
     <ClCompile Include="ClientDoc.cpp" />
     <ClCompile Include="ClientView.cpp" />
     <ClCompile Include="CLoginDlg.cpp" />
+    <ClCompile Include="CRegisterDlg.cpp" />
     <ClCompile Include="CSelectView.cpp" />
     <ClCompile Include="CUserDlg.cpp" />
     <ClCompile Include="MainFrm.cpp" />

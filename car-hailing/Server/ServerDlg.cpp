@@ -253,7 +253,7 @@ void CServerDlg::ClosePlayer(MySocket* from)
 	wchar_t out_msg[200];
 
 	// 填写out_msg信息
-	swprintf(out_msg, L"%s 退出聊天室\r\n", static_cast<const wchar_t*>(from->m_Player));
+	wsprintf(out_msg, L"%s 退出聊天室\r\n", static_cast<const wchar_t*>(from->m_Player));
 	msg_len = wcslen(out_msg) + 1;
 
 	//去列表中找到这个用户，把它删除

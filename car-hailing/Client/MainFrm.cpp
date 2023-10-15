@@ -165,12 +165,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	//TODO::
 
-	//设置图标
-	SetClassLong(m_hWnd, GCL_HICON,
-		(LONG)AfxGetApp()->LoadIconW(IDI_ICON_WIN));
-	// 刷新对话框以显示新图标
-	RedrawWindow();
-
 	//在创建主窗口前，先弹出登录窗口，必须登录成功，才能进入主窗口
 tryagain:
 	//创建登录窗口，并以阻塞方式创建

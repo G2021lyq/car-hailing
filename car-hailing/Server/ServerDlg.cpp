@@ -109,7 +109,6 @@ HCURSOR CServerDlg::OnQueryDragIcon()
 }
 
 
-
 void CServerDlg::OnLvnItemchangedUserlist(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
@@ -283,10 +282,33 @@ void CServerDlg::OnBnClickedButtonStart()
 		if (m_socket.Listen())
 			AfxMessageBox(TEXT("开启服务器成功！"));
 		GetDlgItem(IDC_BUTTON_Start)->EnableWindow(FALSE);
+
+		CreatDriver();
 		return;
 	}
 	AfxMessageBox(TEXT("不好意思，出了点问题..."));
 }
+
+void CServerDlg::CreatDriver()
+{
+
+	// 生成3个司机对象并添加到向量中
+	for (int i = 0; i < 3; ++i) {
+		Driver driver(count);
+		drivers.push_back(driver);
+	}
+
+	wchar_t carMessage[2048];
+	// 遍历司机对象向量并访问属性
+	for (Driver& driver : drivers) {
+		wsprintf(carMessage, L"Driver ID: %d\nCar Model:%d", driver.getId(), driver.getCarModel());
+		MessageBox(carMessage);
+	}
+	//Driver driver1;
+	//Driver driver2;
+
+}
+
 
 
 HBRUSH CServerDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)

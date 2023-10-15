@@ -4,8 +4,9 @@
 
 #pragma once
 
-
+#include "Driver.h"
 #include "MySocket.h"
+#include <vector>
 
 // CServerDlg 对话框
 class CServerDlg : public CDialogEx
@@ -36,6 +37,11 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
+	void CreatDriver();
+	int count = 0;
+	// 创建存储司机对象的向量
+	std::vector<Driver> drivers;
+
 	afx_msg void OnLvnItemchangedUserlist(NMHDR* pNMHDR, LRESULT* pResult);
 	// //记录所有成功登录的用户
 	CListCtrl m_list;

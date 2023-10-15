@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 
-
+////////////////////////////////////
 // CCarContinueDlg 窗体视图
 
 class CCarContinueDlg : public CFormView

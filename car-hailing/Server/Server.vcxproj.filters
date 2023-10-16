@@ -42,6 +42,12 @@
     <ClInclude Include="Order.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="HistoryRecord.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFile.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server.cpp">
@@ -60,6 +66,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Order.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="HistoryRecord.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MyFile.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

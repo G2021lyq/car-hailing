@@ -10,6 +10,8 @@
 
 #include "MySocket.h"
 #include "Order.h"
+#include "HistoryRecord.h"
+#include "MyFile.h"
 
 
 #ifdef _DEBUG
@@ -292,6 +294,20 @@ void CServerDlg::OnBnClickedButtonStart()
 
 void CServerDlg::CreatDriver()
 {
+	// 打开文件以进行写入操作，使用二进制方式
+	CString filePath = _T("./Accounts.txt");
+	CStdioFile file;
+	if (file.Open(filePath, CFile::modeCreate | CFile::modeWrite | CFile::modeNoTruncate | CFile::typeBinary)) {
+		// 将宽字符字符串写入文件
+		wchar_t strToWrite[] = L"这是一行宽字符文字";
+		int strLength = wcslen(strToWrite) * sizeof(wchar_t);
+
+		file.Write(strToWrite, strLength);
+
+		// 关闭文件
+		file.Close();
+	}
+
 	//生成一个Order类
 	double point_1[2] = { 1.345,2.567 };
 	double point_2[2] = { 21.567,10.786 };

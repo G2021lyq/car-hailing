@@ -185,6 +185,8 @@
   <ItemGroup>
     <ClInclude Include="Driver.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="HistoryRecord.h" />
+    <ClInclude Include="MyFile.h" />
     <ClInclude Include="MySocket.h" />
     <ClInclude Include="Order.h" />
     <ClInclude Include="pch.h" />
@@ -195,6 +197,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Driver.cpp" />
+    <ClCompile Include="HistoryRecord.cpp" />
+    <ClCompile Include="MyFile.cpp" />
     <ClCompile Include="MySocket.cpp" />
     <ClCompile Include="Order.cpp" />
     <ClCompile Include="pch.cpp">

@@ -5,6 +5,9 @@
 #include "Client.h"
 #include "CCarContinueDlg.h"
 
+#include "MainFrm.h"
+#include "Driver.h"
+#include "Order.h"
 
 // CCarContinueDlg
 
@@ -25,7 +28,10 @@ void CCarContinueDlg::DoDataExchange(CDataExchange* pDX)
 	CFormView::DoDataExchange(pDX);
 }
 
+
 BEGIN_MESSAGE_MAP(CCarContinueDlg, CFormView)
+
+	ON_MESSAGE(NM_START_SERVICE, OnMyChange)
 END_MESSAGE_MAP()
 
 
@@ -47,3 +53,27 @@ void CCarContinueDlg::Dump(CDumpContext& dc) const
 
 
 // CCarContinueDlg 消息处理程序
+LRESULT CCarContinueDlg::OnMyChange(WPARAM wParam, LPARAM lParam)
+{
+	switch (wParam)
+	{
+	case NM_START_SERVICE:
+		// 获取到参数,参数是一个字符串，表示订单
+		wchar_t* getStr = reinterpret_cast<wchar_t*>(lParam);
+		CString OrderStr(getStr); // 将wchar_t*转换为CString
+
+		//将这个字符串赋值给订单实例
+		int count = 0;
+		Order m_order;
+		m_order = OrderStr;
+
+		MessageBox(OrderStr);
+
+		//TODO::
+
+		break;
+	}
+	return 0;
+
+}
+

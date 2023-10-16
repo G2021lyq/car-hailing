@@ -30,7 +30,6 @@ void CCarServiceDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CCarServiceDlg, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON2, &CCarServiceDlg::OnBnClickedButton2)
 
-	ON_MESSAGE(NM_START_SERVICE, OnMyChange)
 END_MESSAGE_MAP()
 
 
@@ -67,18 +66,8 @@ LRESULT CCarServiceDlg::OnMyChange(WPARAM wParam, LPARAM lParam)
 {
 	switch (wParam)
 	{
-	case NM_START_SERVICE:
-		// 获取到参数,参数是一个字符串，表示订单
-		wchar_t* getStr = reinterpret_cast<wchar_t*>(lParam);
-		CString OrderStr(getStr); // 将wchar_t*转换为CString
 
-		//将这个字符串赋值给订单实例
-		int count = 0;
-		Order m_order;
-		m_order = OrderStr;
 
-		MessageBox(OrderStr);
-		break;
 	}
 	return 0;
 

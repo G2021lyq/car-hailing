@@ -1,5 +1,8 @@
 ﻿#pragma once
 
+//自定义的消息
+#define NM_START_SERVICE (WM_USER+2026)
+#define NM_D (WM_USER+2027)
 
 ////////////////////////////////////
 // CCarContinueDlg 窗体视图
@@ -27,6 +30,10 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
+
+public:
+	//自定义消息处理函数
+	afx_msg LRESULT OnMyChange(WPARAM wParam, LPARAM lParam);
 };
 
 

@@ -1,128 +1,159 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Driver.h"
 
-Driver::Driver(int& count) {
-    // ³õÊ¼»¯Ëæ»úÊıÖÖ×Ó
-    //srand(static_cast<unsigned>(time(nullptr)));
-    //std::cout << rand() << std::endl;
-
-
-    // Éú³ÉÎ¨Ò»°´ĞòÉú³ÉµÄ ID Öµ
-    id = generateUniqueId(count);
-
-    // Éú³ÉËæ»ú³µĞÍ£¨1-3£©
-    carModel = generateRandomCarModel();
-
-    // Éú³ÉËæ»úµ±Ç°Î»ÖÃ£¨Î»ÖÃÓÃ xy ×ø±ê±íÊ¾£¬·¶Î§ 0-20£©
-    //currentPositionX = generateRandomCoordinate(0, 20);
-    //currentPositionY = generateRandomCoordinate(0, 20);
-    // ×¢ÒâÉú³ÉµÄËæ»úµ±Ç°Î»ÖÃÓ¦¸ÃÔÚÀ­¿Í·¶Î§Ö®ÄÚ
-    //currentPositionX = generateRandomCoordinate(À­¿Í·¶Î§x1, À­¿Í·¶Î§x2);
-    //currentPositionY = generateRandomCoordinate(À­¿Í·¶Î§y1, À­¿Í·¶Î§y2);
-
-    // Éú³ÉÀ­¿Í·¶Î§£¨×óÉÏ½Ç×ø±êºÍÓÒÏÂ½Ç×ø±êµÄ·½ĞÎ£©
-    pickUpAreaLeftTopX = generateRandomCoordinate(0, 10);
-    pickUpAreaLeftTopY = generateRandomCoordinate(0, 10);
-    pickUpAreaRightBottomX = generateRandomCoordinate(11, 20);
-    pickUpAreaRightBottomY = generateRandomCoordinate(11, 20);
-
-    // Éú³ÉËæ»úµ±Ç°Î»ÖÃ£¨Î»ÖÃÓÃ xy ×ø±ê±íÊ¾£¬·¶Î§ À­¿Í·¶Î§£©
-    currentPositionX = generateRandomCoordinate(pickUpAreaLeftTopX, pickUpAreaRightBottomX);
-    currentPositionY = generateRandomCoordinate(pickUpAreaLeftTopY, pickUpAreaRightBottomY);
+Driver::Driver()
+{
 }
 
-// Getter ºÍ Setter º¯Êı
+Driver::Driver(int& count) {
+	// åˆå§‹åŒ–éšæœºæ•°ç§å­
+	//srand(static_cast<unsigned>(time(nullptr)));
+	//std::cout << rand() << std::endl;
+
+
+	// ç”Ÿæˆå”¯ä¸€æŒ‰åºç”Ÿæˆçš„ ID å€¼
+	id = generateUniqueId(count);
+
+	// ç”Ÿæˆéšæœºè½¦å‹ï¼ˆ1-3ï¼‰
+	carModel = generateRandomCarModel();
+
+	// ç”Ÿæˆéšæœºå½“å‰ä½ç½®ï¼ˆä½ç½®ç”¨ xy åæ ‡è¡¨ç¤ºï¼ŒèŒƒå›´ 0-20ï¼‰
+	//currentPositionX = generateRandomCoordinate(0, 20);
+	//currentPositionY = generateRandomCoordinate(0, 20);
+	// æ³¨æ„ç”Ÿæˆçš„éšæœºå½“å‰ä½ç½®åº”è¯¥åœ¨æ‹‰å®¢èŒƒå›´ä¹‹å†…
+	//currentPositionX = generateRandomCoordinate(æ‹‰å®¢èŒƒå›´x1, æ‹‰å®¢èŒƒå›´x2);
+	//currentPositionY = generateRandomCoordinate(æ‹‰å®¢èŒƒå›´y1, æ‹‰å®¢èŒƒå›´y2);
+
+	// ç”Ÿæˆæ‹‰å®¢èŒƒå›´ï¼ˆå·¦ä¸Šè§’åæ ‡å’Œå³ä¸‹è§’åæ ‡çš„æ–¹å½¢ï¼‰
+	pickUpAreaLeftTopX = generateRandomCoordinate(0, 10);
+	pickUpAreaLeftTopY = generateRandomCoordinate(0, 10);
+	pickUpAreaRightBottomX = generateRandomCoordinate(11, 20);
+	pickUpAreaRightBottomY = generateRandomCoordinate(11, 20);
+
+	// ç”Ÿæˆéšæœºå½“å‰ä½ç½®ï¼ˆä½ç½®ç”¨ xy åæ ‡è¡¨ç¤ºï¼ŒèŒƒå›´ æ‹‰å®¢èŒƒå›´ï¼‰
+	currentPositionX = generateRandomCoordinate(pickUpAreaLeftTopX, pickUpAreaRightBottomX);
+	currentPositionY = generateRandomCoordinate(pickUpAreaLeftTopY, pickUpAreaRightBottomY);
+}
+
+// Getter å’Œ Setter å‡½æ•°
 int Driver::getId() {
-    return id;
+	return id;
 }
 
 int Driver::getCarModel() {
-    return carModel;
+	return carModel;
 }
 
 void Driver::setCarModel(int model) {
-    carModel = model;
+	carModel = model;
 }
 
 int Driver::getCurrentPositionX() {
-    return currentPositionX;
+	return currentPositionX;
 }
 
 int Driver::getCurrentPositionY() {
-    return currentPositionY;
+	return currentPositionY;
 }
 
 void Driver::setCurrentPosition(int x, int y) {
-    currentPositionX = x;
-    currentPositionY = y;
+	currentPositionX = x;
+	currentPositionY = y;
 }
 
 int Driver::getPickUpAreaLeftTopX() {
-    return pickUpAreaLeftTopX;
+	return pickUpAreaLeftTopX;
 }
 
 int Driver::getPickUpAreaLeftTopY() {
-    return pickUpAreaLeftTopY;
+	return pickUpAreaLeftTopY;
 }
 
 int Driver::getPickUpAreaRightBottomX() {
-    return pickUpAreaRightBottomX;
+	return pickUpAreaRightBottomX;
 }
 
 int Driver::getPickUpAreaRightBottomY() {
-    return pickUpAreaRightBottomY;
+	return pickUpAreaRightBottomY;
 }
 
 void Driver::setPickUpArea(int leftTopX, int leftTopY, int rightBottomX, int rightBottomY) {
-    pickUpAreaLeftTopX = leftTopX;
-    pickUpAreaLeftTopY = leftTopY;
-    pickUpAreaRightBottomX = rightBottomX;
-    pickUpAreaRightBottomY = rightBottomY;
+	pickUpAreaLeftTopX = leftTopX;
+	pickUpAreaLeftTopY = leftTopY;
+	pickUpAreaRightBottomX = rightBottomX;
+	pickUpAreaRightBottomY = rightBottomY;
 }
 
 
 
-int Driver::generateUniqueId(int &count) {
-    // ÊµÏÖÉú³ÉÎ¨Ò» ID µÄÂß¼­
-    // Äã¿ÉÒÔÊ¹ÓÃÊ±¼ä´Á¡¢×ÔÔö¼ÆÊıÆ÷µÈ·½Ê½Éú³ÉÎ¨Ò» ID
-    return count++; // ÕâÀïÊ¾Àı·µ»Ø 0£¬ĞèÒª¸ù¾İ¾ßÌåĞèÇóÊµÏÖ
+int Driver::generateUniqueId(int& count) {
+	// å®ç°ç”Ÿæˆå”¯ä¸€ ID çš„é€»è¾‘
+	// ä½ å¯ä»¥ä½¿ç”¨æ—¶é—´æˆ³ã€è‡ªå¢è®¡æ•°å™¨ç­‰æ–¹å¼ç”Ÿæˆå”¯ä¸€ ID
+	return count++; // è¿™é‡Œç¤ºä¾‹è¿”å› 0ï¼Œéœ€è¦æ ¹æ®å…·ä½“éœ€æ±‚å®ç°
 }
 
 int Driver::generateRandomCarModel() {
-    // Éú³É 1-3 Ö®¼äµÄËæ»úÕûÊı×÷Îª³µĞÍ
-    return rand() % 3 + 1;
+	// ç”Ÿæˆ 1-3 ä¹‹é—´çš„éšæœºæ•´æ•°ä½œä¸ºè½¦å‹
+	return rand() % 3 + 1;
 }
 
 int Driver::generateRandomCoordinate(int min, int max) {
-    // Éú³ÉÖ¸¶¨·¶Î§ÄÚµÄËæ»ú×ø±ê
-    return rand() % (max - min + 1) + min;
+	// ç”ŸæˆæŒ‡å®šèŒƒå›´å†…çš„éšæœºåæ ‡
+	return rand() % (max - min + 1) + min;
+}
+
+CString Driver::ToString() {
+	CString str;
+	str.Format(_T("Driver ID: %d, Car Model: %d, Current Position: (%d, %d), Pick Up Area: (%d, %d) - (%d, %d)"),
+		id, carModel, currentPositionX, currentPositionY,
+		pickUpAreaLeftTopX, pickUpAreaLeftTopY, pickUpAreaRightBottomX, pickUpAreaRightBottomY);
+	return str;
+}
+
+Driver Driver::FromCString(CString str) {
+	int count = 0;
+	Driver driver(count);  // ä½¿ç”¨é»˜è®¤çš„æ„é€ å‡½æ•°åˆ›å»ºä¸€ä¸ªDriverå®ä¾‹
+	int scanned = _stscanf_s(str, _T("Driver ID: %d, Car Model: %d, Current Position: (%d, %d), Pick Up Area: (%d, %d) - (%d, %d)"),
+		&driver.id, &driver.carModel, &driver.currentPositionX, &driver.currentPositionY,
+		&driver.pickUpAreaLeftTopX, &driver.pickUpAreaLeftTopY, &driver.pickUpAreaRightBottomX, &driver.pickUpAreaRightBottomY);
+	if (scanned != 8) {
+		// å¤„ç†è§£æå¤±è´¥çš„æƒ…å†µ
+		// å¯ä»¥æŠ›å‡ºå¼‚å¸¸æˆ–è€…è¿”å›ä¸€ä¸ªé»˜è®¤å€¼
+	}
+	return driver;
+}
+
+Driver& Driver::operator=(const CString& str) {
+	// ä½¿ç”¨FromCStringå‡½æ•°å°†CStringè½¬æ¢ä¸ºDriverå®ä¾‹
+	*this = FromCString(str);
+	return *this;
 }
 
 
 /*
-    int main() {
-        // ´´½¨´æ´¢Ë¾»ú¶ÔÏóµÄÏòÁ¿
-        std::vector<Driver> drivers;
+	int main() {
+		// åˆ›å»ºå­˜å‚¨å¸æœºå¯¹è±¡çš„å‘é‡
+		std::vector<Driver> drivers;
 
-        // Éú³É10¸öË¾»ú¶ÔÏó²¢Ìí¼Óµ½ÏòÁ¿ÖĞ
-        for (int i = 0; i < 10; ++i) {
-            Driver driver;
-            drivers.push_back(driver);
-        }
+		// ç”Ÿæˆ10ä¸ªå¸æœºå¯¹è±¡å¹¶æ·»åŠ åˆ°å‘é‡ä¸­
+		for (int i = 0; i < 10; ++i) {
+			Driver driver;
+			drivers.push_back(driver);
+		}
 
-        // ±éÀúË¾»ú¶ÔÏóÏòÁ¿²¢·ÃÎÊÊôĞÔ
-        for (Driver& driver : drivers) {
-            std::cout << "Driver ID: " << driver.getId() << std::endl;
-            std::cout << "Car Model: " << driver.getCarModel() << std::endl;
-            std::cout << "Current Position: (" << driver.getCurrentPositionX() << ", " << driver.getCurrentPositionY() << ")" << std::endl;
-            std::cout << "Pick-up Area: (" << driver.getPickUpAreaLeftTopX() << ", " << driver.getPickUpAreaLeftTopY() << ") - (" << driver.getPickUpAreaRightBottomX() << ", " << driver.getPickUpAreaRightBottomY() << ")" << std::endl;
-            std::cout << "-----------------------------------" << std::endl;
-        }
-        //Driver driver1;
-        //Driver driver2;
+		// éå†å¸æœºå¯¹è±¡å‘é‡å¹¶è®¿é—®å±æ€§
+		for (Driver& driver : drivers) {
+			std::cout << "Driver ID: " << driver.getId() << std::endl;
+			std::cout << "Car Model: " << driver.getCarModel() << std::endl;
+			std::cout << "Current Position: (" << driver.getCurrentPositionX() << ", " << driver.getCurrentPositionY() << ")" << std::endl;
+			std::cout << "Pick-up Area: (" << driver.getPickUpAreaLeftTopX() << ", " << driver.getPickUpAreaLeftTopY() << ") - (" << driver.getPickUpAreaRightBottomX() << ", " << driver.getPickUpAreaRightBottomY() << ")" << std::endl;
+			std::cout << "-----------------------------------" << std::endl;
+		}
+		//Driver driver1;
+		//Driver driver2;
 
-        return 0;
-    }
+		return 0;
+	}
 */
 
 

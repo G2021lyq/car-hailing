@@ -1,49 +1,56 @@
-#pragma once
+ï»¿#pragma once
 #include <iostream>
-#include <cstdlib> // ÓÃÓÚËæ»úÊıÉú³É
-#include <ctime>   // ÓÃÓÚÖÖ×ÓÉú³É
+#include <cstdlib> // ç”¨äºéšæœºæ•°ç”Ÿæˆ
+#include <ctime>   // ç”¨äºç§å­ç”Ÿæˆ
 #include <vector>
+#include <afxstr.h>  // ç”¨äºCString
 
 class Driver {
 public:
-    Driver(int& count);
+	Driver();
+	Driver(int& count);
 
-    // Getter ºÍ Setter º¯Êı
-    int getId();
+	// Getter å’Œ Setter å‡½æ•°
+	int getId();
 
-    int getCarModel();
+	int getCarModel();
 
-    void setCarModel(int model);
+	void setCarModel(int model);
 
-    int getCurrentPositionX();
+	int getCurrentPositionX();
 
-    int getCurrentPositionY();
+	int getCurrentPositionY();
 
-    void setCurrentPosition(int x, int y);
+	void setCurrentPosition(int x, int y);
 
-    int getPickUpAreaLeftTopX();
+	int getPickUpAreaLeftTopX();
 
-    int getPickUpAreaLeftTopY();
+	int getPickUpAreaLeftTopY();
 
-    int getPickUpAreaRightBottomX();
+	int getPickUpAreaRightBottomX();
 
-    int getPickUpAreaRightBottomY();
+	int getPickUpAreaRightBottomY();
 
-    void setPickUpArea(int leftTopX, int leftTopY, int rightBottomX, int rightBottomY);
+	void setPickUpArea(int leftTopX, int leftTopY, int rightBottomX, int rightBottomY);
+
+	CString ToString();
+	Driver FromCString(CString str);
+	//é‡è½½èµ‹å€¼è¿ç®—
+	Driver& operator=(const CString& str);
 
 private:
-    int id;
-    int carModel;
-    int currentPositionX;
-    int currentPositionY;
-    int pickUpAreaLeftTopX;
-    int pickUpAreaLeftTopY;
-    int pickUpAreaRightBottomX;
-    int pickUpAreaRightBottomY;
+	int id;
+	int carModel;
+	int currentPositionX;
+	int currentPositionY;
+	int pickUpAreaLeftTopX;
+	int pickUpAreaLeftTopY;
+	int pickUpAreaRightBottomX;
+	int pickUpAreaRightBottomY;
 
-    int generateUniqueId(int& count);
+	int generateUniqueId(int& count);
 
-    int generateRandomCarModel();
+	int generateRandomCarModel();
 
-    int generateRandomCoordinate(int min, int max);
+	int generateRandomCoordinate(int min, int max);
 };

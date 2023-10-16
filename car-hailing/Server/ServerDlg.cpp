@@ -298,15 +298,14 @@ void CServerDlg::CreatDriver()
 		drivers.push_back(driver);
 	}
 
-	wchar_t carMessage[2048];
 	// 遍历司机对象向量并访问属性
 	for (Driver& driver : drivers) {
-		wsprintf(carMessage, L"Driver ID: %d\nCar Model:%d", driver.getId(), driver.getCarModel());
+		CString carMessage = driver.ToString();
 		MessageBox(carMessage);
+		Driver newDriver;
+		newDriver = carMessage;
+		//MessageBox(carMessage);
 	}
-	//Driver driver1;
-	//Driver driver2;
-
 }
 
 

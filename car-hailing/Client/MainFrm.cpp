@@ -76,6 +76,7 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		break;
 
 	case(NM_B):
+
 		Context.m_pNewViewClass = RUNTIME_CLASS(CCarServiceDlg);
 		Context.m_pCurrentFrame = this;
 		Context.m_pLastView = (CFormView*)m_spliter.GetPane(0, 1);
@@ -90,6 +91,10 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		break;
 
 	case(NM_OK):
+		CStringW receivedString = static_cast<LPCTSTR>(reinterpret_cast<LPCWSTR>(lParam));
+		wchar_t Buff[2048];
+		wsprintf(Buff, L"%s", receivedString);
+
 		Context.m_pNewViewClass = RUNTIME_CLASS(CCarContinueDlg);
 		Context.m_pCurrentFrame = this;
 		Context.m_pLastView = (CFormView*)m_spliter.GetPane(0, 1);
@@ -101,6 +106,12 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		pNewView->OnInitialUpdate();
 		m_spliter.SetActivePane(0, 1);
 
+		receivedString = static_cast<LPCTSTR>(reinterpret_cast<LPCWSTR>(lParam));
+		//发送消息
+		//LPARAM lParam_2 = reinterpret_cast<LPARAM>(static_cast<LPCTSTR>(receivedString));
+		//pNewView->PostMessage(NM_START_SERVICE, (WPARAM)NM_START_SERVICE, (LPARAM)lParam);
+
+		pNewView->PostMessage(NM_START_SERVICE, (WPARAM)NM_START_SERVICE, reinterpret_cast<LPARAM>(Buff));
 		break;
 
 	}

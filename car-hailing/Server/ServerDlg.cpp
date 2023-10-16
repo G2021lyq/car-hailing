@@ -9,6 +9,7 @@
 #include "afxdialogex.h"
 
 #include "MySocket.h"
+#include "Order.h"
 
 
 #ifdef _DEBUG
@@ -291,6 +292,18 @@ void CServerDlg::OnBnClickedButtonStart()
 
 void CServerDlg::CreatDriver()
 {
+	//生成一个Order类
+	double point_1[2] = { 1.345,2.567 };
+	double point_2[2] = { 21.567,10.786 };
+
+	Order aOrder(L"driver", L"passenger", point_1, point_2);
+	CString OrderStr = aOrder.ToCString();
+	//MessageBox(OrderStr);
+
+	Order b;
+	b = OrderStr;
+	OrderStr = b.ToCString();
+	MessageBox(OrderStr);
 
 	// 生成3个司机对象并添加到向量中
 	for (int i = 0; i < 3; ++i) {
@@ -301,7 +314,7 @@ void CServerDlg::CreatDriver()
 	// 遍历司机对象向量并访问属性
 	for (Driver& driver : drivers) {
 		CString carMessage = driver.ToString();
-		MessageBox(carMessage);
+		//MessageBox(carMessage);
 		Driver newDriver;
 		newDriver = carMessage;
 		//MessageBox(carMessage);

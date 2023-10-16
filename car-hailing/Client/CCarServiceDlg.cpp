@@ -56,8 +56,26 @@ void CCarServiceDlg::Dump(CDumpContext& dc) const
 void CCarServiceDlg::OnBnClickedButton2()
 {
 
-	// 寻找到司机成功，向主窗口，发送NM_OK消息，参数如下
-	::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_OK, (WPARAM)NM_OK, (LPARAM)0);
+
+	// 找到司机成功，向主窗口，发送NM_OK消息，参数如下
+
+	//生成driver类
+	int count = 0;
+	Driver driver(count);
+
+	//生成一个Order类
+	double point_1[2] = { 1.345,2.567 };
+	double point_2[2] = { 21.567,10.786 };
+	Order aOrder(driver.ToString(), L"passenger", point_1, point_2);
+
+	CString myString = aOrder.ToCString();
+	MessageBox(myString);
+
+	LPARAM lParam = reinterpret_cast<LPARAM>(static_cast<LPCTSTR>(myString));
+	::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_OK, (WPARAM)NM_OK, lParam);
+
+	//CMainFrame* pMainFrame = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
+	//pMainFrame->PostMessage(NM_OK, (WPARAM)NM_OK, reinterpret_cast<LPARAM>(myWCharString));
 
 	// TODO: 在此添加控件通知处理程序代码
 }

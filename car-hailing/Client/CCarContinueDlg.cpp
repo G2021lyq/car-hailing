@@ -58,19 +58,10 @@ LRESULT CCarContinueDlg::OnMyChange(WPARAM wParam, LPARAM lParam)
 	switch (wParam)
 	{
 	case NM_START_SERVICE:
-		// 获取到参数,参数是一个字符串，表示订单
-		wchar_t* getStr = reinterpret_cast<wchar_t*>(lParam);
-		CString OrderStr(getStr); // 将wchar_t*转换为CString
-
-		//将这个字符串赋值给订单实例
-		int count = 0;
-		Order m_order;
-		m_order = OrderStr;
-
+		CString OrderStr = static_cast<LPCTSTR>(reinterpret_cast<LPCWSTR>(lParam));
 		MessageBox(OrderStr);
 
-		//TODO::
-
+		//ToDo::
 		break;
 	}
 	return 0;

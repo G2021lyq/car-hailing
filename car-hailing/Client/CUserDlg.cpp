@@ -86,6 +86,7 @@ LRESULT CUserDlg::OnMyChange(WPARAM wParam, LPARAM lParam)
 	case NM_TEST_SOCKET:
 		// 获取到参数
 		wchar_t* myString = reinterpret_cast<wchar_t*>(lParam);
+		//MessageBox(myString);
 		m_ShowMessage.SetWindowText(myString); // 在CUserDlg内操作test_edit
 		break;
 	}

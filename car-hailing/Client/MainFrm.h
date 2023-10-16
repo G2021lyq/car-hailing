@@ -15,6 +15,10 @@
 
 #define NM_TEST_SOCKET (WM_USER+2025)
 
+#define NM_START_SERVICE (WM_USER+2026)
+
+#define NM_D (WM_USER+2027)
+
 
 #include "MySocket.h"
 

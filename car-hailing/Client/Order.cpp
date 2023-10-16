@@ -1,98 +1,107 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Order.h"
 
+Order::Order()
+{
+
+	// åœ¨æ„é€ å‡½æ•°ä¸­åˆå§‹åŒ–è®¢å•çš„å„ä¸ªå±æ€§
+	m_billAmount = CalculateBillAmount();
+	m_estimatedTime = CalculateEstimatedTime();
+	m_isCancelled = false;
+}
+
 Order::Order(const CString& driver, const CString& passenger, double distance)
-    : m_driver(driver), m_passenger(passenger), m_distance(distance) {
-    // ÔÚ¹¹Ôìº¯ÊıÖĞ³õÊ¼»¯¶©µ¥µÄ¸÷¸öÊôĞÔ
-    m_billAmount = CalculateBillAmount();
-    m_estimatedTime = CalculateEstimatedTime();
-    m_isCancelled = false;
+	: m_driver(driver), m_passenger(passenger), m_distance(distance) {
+	// åœ¨æ„é€ å‡½æ•°ä¸­åˆå§‹åŒ–è®¢å•çš„å„ä¸ªå±æ€§
+	m_billAmount = CalculateBillAmount();
+	m_estimatedTime = CalculateEstimatedTime();
+	m_isCancelled = false;
 }
 
 
-// »ñÈ¡Ë¾»úÃû³Æ
+// è·å–å¸æœºåç§°
 CString Order::GetDriver() const
 {
-    return m_driver;
+	return m_driver;
 }
 
-// »ñÈ¡³Ë¿ÍÃû³Æ
+// è·å–ä¹˜å®¢åç§°
 CString Order::GetPassenger() const {
-    return m_passenger;
+	return m_passenger;
 }
 
-// »ñÈ¡ÒÑ×ßÀï³Ì
+// è·å–å·²èµ°é‡Œç¨‹
 double Order::GetDistance() const {
-    return m_distance;
+	return m_distance;
 }
 
-// »ñÈ¡ÕËµ¥½ğ¶î
+// è·å–è´¦å•é‡‘é¢
 double Order::GetBillAmount() const {
-    return m_billAmount;
+	return m_billAmount;
 }
 
-// »ñÈ¡Ô¤¼ÆÊ£ÓàÊ±¼ä
+// è·å–é¢„è®¡å‰©ä½™æ—¶é—´
 CString Order::GetEstimatedTime() const {
-    return m_estimatedTime;
+	return m_estimatedTime;
 }
 
-// ¼ì²é¶©µ¥ÊÇ·ñÒÑÈ¡Ïû
+// æ£€æŸ¥è®¢å•æ˜¯å¦å·²å–æ¶ˆ
 bool Order::IsCancelled() const {
-    return m_isCancelled;
+	return m_isCancelled;
 }
 
-// È¡Ïû¶©µ¥
+// å–æ¶ˆè®¢å•
 void Order::CancelOrder() {
-    m_isCancelled = true;
+	m_isCancelled = true;
 }
 
-// ¼ÆËãÕËµ¥½ğ¶î
+// è®¡ç®—è´¦å•é‡‘é¢
 double Order::CalculateBillAmount() {
-    // ÕâÀï¿ÉÒÔ¸ù¾İ¾ßÌåµÄ¼Æ·Ñ¹æÔò½øĞĞ¼ÆËã
-    // ¼ÙÉèÃ¿¹«ÀïÊÕ·Ñ 10 Ôª
-    const double ratePerKilometer = 10.0;
-    return m_distance * ratePerKilometer;
+	// è¿™é‡Œå¯ä»¥æ ¹æ®å…·ä½“çš„è®¡è´¹è§„åˆ™è¿›è¡Œè®¡ç®—
+	// å‡è®¾æ¯å…¬é‡Œæ”¶è´¹ 10 å…ƒ
+	const double ratePerKilometer = 10.0;
+	return m_distance * ratePerKilometer;
 }
 
-// ¼ÆËãÔ¤¼ÆÊ£ÓàÊ±¼ä
+// è®¡ç®—é¢„è®¡å‰©ä½™æ—¶é—´
 CString Order::CalculateEstimatedTime() {
-    // ÕâÀï¿ÉÒÔ¸ù¾İ¾ßÌåµÄÂ·³ÌºÍ½»Í¨Çé¿ö½øĞĞ¹ÀËã
-    // ¼ÙÉèÃ¿·ÖÖÓĞĞÊ» 1 ¹«Àï
-    const double speed = 1.0; // ¹«Àï/·ÖÖÓ
-    double estimatedTime = m_distance / speed;
+	// è¿™é‡Œå¯ä»¥æ ¹æ®å…·ä½“çš„è·¯ç¨‹å’Œäº¤é€šæƒ…å†µè¿›è¡Œä¼°ç®—
+	// å‡è®¾æ¯åˆ†é’Ÿè¡Œé©¶ 1 å…¬é‡Œ
+	const double speed = 1.0; // å…¬é‡Œ/åˆ†é’Ÿ
+	double estimatedTime = m_distance / speed;
 
-    int hours = static_cast<int>(estimatedTime / 60);
-    int minutes = static_cast<int>(estimatedTime) % 60;
+	int hours = static_cast<int>(estimatedTime / 60);
+	int minutes = static_cast<int>(estimatedTime) % 60;
 
-    CString strEstimatedTime;
-    strEstimatedTime.Format(_T("%dh%dmin"), hours, minutes);
-    return strEstimatedTime;
+	CString strEstimatedTime;
+	strEstimatedTime.Format(_T("%dh%dmin"), hours, minutes);
+	return strEstimatedTime;
 }
 
 CString Order::ToCString() const {
-    CString strOrder;
-    strOrder.Format(_T("Driver: %s, Passenger: %s, Distance: %.2f km, Bill Amount: %.2f, Estimated Time: %s, Is Cancelled: %s"),
-                    m_driver, m_passenger, m_distance, m_billAmount, m_estimatedTime, m_isCancelled ? _T("Yes") : _T("No"));
-    return strOrder;
+	CString strOrder;
+	strOrder.Format(_T("Driver: %s, Passenger: %s, Distance: %.2f km, Bill Amount: %.2f, Estimated Time: %s, Is Cancelled: %s"),
+		m_driver, m_passenger, m_distance, m_billAmount, m_estimatedTime, m_isCancelled ? _T("Yes") : _T("No"));
+	return strOrder;
 }
 
 void Order::FromCString(const CString& strOrder) {
-    CString strDriver, strPassenger, strDistance, strBillAmount, strEstimatedTime, strIsCancelled;
-    int nMatches = _stscanf_s(strOrder, _T("Driver: %s, Passenger: %s, Distance: %lf km, Bill Amount: %lf, Estimated Time: %s, Is Cancelled: %s"),
-                              strDriver.GetBufferSetLength(100), 100,
-                              strPassenger.GetBufferSetLength(100), 100,
-                              &m_distance, &m_billAmount,
-                              strEstimatedTime.GetBufferSetLength(100), 100,
-                              strIsCancelled.GetBufferSetLength(100), 100);
+	CString strDriver, strPassenger, strDistance, strBillAmount, strEstimatedTime, strIsCancelled;
+	int nMatches = _stscanf_s(strOrder, _T("Driver: %s, Passenger: %s, Distance: %lf km, Bill Amount: %lf, Estimated Time: %s, Is Cancelled: %s"),
+		strDriver.GetBufferSetLength(100), 100,
+		strPassenger.GetBufferSetLength(100), 100,
+		&m_distance, &m_billAmount,
+		strEstimatedTime.GetBufferSetLength(100), 100,
+		strIsCancelled.GetBufferSetLength(100), 100);
 
-    m_driver = strDriver;
-    m_passenger = strPassenger;
-    m_estimatedTime = strEstimatedTime;
-    m_isCancelled = (strIsCancelled.CompareNoCase(_T("Yes")) == 0);
+	m_driver = strDriver;
+	m_passenger = strPassenger;
+	m_estimatedTime = strEstimatedTime;
+	m_isCancelled = (strIsCancelled.CompareNoCase(_T("Yes")) == 0);
 }
 
 
 Order& Order::operator=(const CString& strOrder) {
-    FromCString(strOrder);
-    return *this;
+	FromCString(strOrder);
+	return *this;
 }

@@ -1,36 +1,37 @@
-#pragma once
+ï»¿#pragma once
 #include <iostream>
 #include <afx.h> 
 
 class Order {
 public:
-    Order(const CString& driver, const CString& passenger, double distance);
+	Order();
+	Order(const CString& driver, const CString& passenger, double distance);
 
-    CString GetDriver() const;
-    CString GetPassenger() const;
-    double GetDistance() const;
-    double GetBillAmount() const;
-    CString GetEstimatedTime() const;
-    bool IsCancelled() const;
-    void CancelOrder();
+	CString GetDriver() const;
+	CString GetPassenger() const;
+	double GetDistance() const;
+	double GetBillAmount() const;
+	CString GetEstimatedTime() const;
+	bool IsCancelled() const;
+	void CancelOrder();
 
-    //½«¶©µ¥Àà×ª»»Îª MFC µÄ CString ×Ö·û´®¡£
-    CString ToCString() const;
+	//å°†è®¢å•ç±»è½¬æ¢ä¸º MFC çš„ CString å­—ç¬¦ä¸²ã€‚
+	CString ToCString() const;
 
-    //½«ºÏ·¨µÄ MFC µÄ CString ×Ö·û´®×ª»Ø¶©µ¥Àà
-    void FromCString(const CString& strOrder);
+	//å°†åˆæ³•çš„ MFC çš„ CString å­—ç¬¦ä¸²è½¬å›è®¢å•ç±»
+	void FromCString(const CString& strOrder);
 
-    //ÖØÔØ¸³ÖµÔËËã·û£¬½« MFC µÄ CString ¸³Öµ¸ø¶©µ¥ÀàÊµÀı
-    Order& operator=(const CString& strOrder);
+	//é‡è½½èµ‹å€¼è¿ç®—ç¬¦ï¼Œå°† MFC çš„ CString èµ‹å€¼ç»™è®¢å•ç±»å®ä¾‹
+	Order& operator=(const CString& strOrder);
 
 private:
-    CString m_driver;
-    CString m_passenger;
-    double m_distance;
-    double m_billAmount;
-    CString m_estimatedTime;
-    bool m_isCancelled;
+	CString m_driver;
+	CString m_passenger;
+	double m_distance;
+	double m_billAmount;
+	CString m_estimatedTime;
+	bool m_isCancelled;
 
-    double CalculateBillAmount();
-    CString CalculateEstimatedTime();
+	double CalculateBillAmount();
+	CString CalculateEstimatedTime();
 };

@@ -298,7 +298,7 @@ void CServerDlg::CreatDriver()
 
 	Order aOrder(L"driver", L"passenger", point_1, point_2);
 	CString OrderStr = aOrder.ToCString();
-	MessageBox(OrderStr);
+	//MessageBox(OrderStr);
 
 	Order b;
 	b = OrderStr;
@@ -314,7 +314,7 @@ void CServerDlg::CreatDriver()
 	// 遍历司机对象向量并访问属性
 	for (Driver& driver : drivers) {
 		CString carMessage = driver.ToString();
-		MessageBox(carMessage);
+		//MessageBox(carMessage);
 		Driver newDriver;
 		newDriver = carMessage;
 		//MessageBox(carMessage);

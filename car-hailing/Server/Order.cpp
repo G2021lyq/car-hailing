@@ -1,9 +1,24 @@
 #include "pch.h"
 #include "Order.h"
 
-Order::Order(const CString& driver, const CString& passenger, double distance)
-    : m_driver(driver), m_passenger(passenger), m_distance(distance) {
+Order::Order(const CString& driver, const CString& passenger, double* start, double* end)
+    : m_driver(driver), m_passenger(passenger) {
     // 在构造函数中初始化订单的各个属性
+    m_start[0] = start[0];
+    m_start[1] = start[1];
+    m_end[0] = end[0];
+    m_end[1] = end[1];
+    m_billAmount = CalculateBillAmount();
+    m_estimatedTime = CalculateEstimatedTime();
+    m_isCancelled = false;
+}
+Order::Order(const CString& passenger, double* start, double* end)
+    : m_passenger(passenger) {
+    // 在构造函数中初始化订单的各个属性
+    m_start[0] = start[0];
+    m_start[1] = start[1];
+    m_end[0] = end[0];
+    m_end[1] = end[1];
     m_billAmount = CalculateBillAmount();
     m_estimatedTime = CalculateEstimatedTime();
     m_isCancelled = false;
@@ -21,7 +36,7 @@ CString Order::GetPassenger() const {
     return m_passenger;
 }
 
-// 获取已走里程
+// 获取距离
 double Order::GetDistance() const {
     return m_distance;
 }
@@ -71,16 +86,17 @@ CString Order::CalculateEstimatedTime() {
 
 CString Order::ToCString() const {
     CString strOrder;
-    strOrder.Format(_T("Driver: %s, Passenger: %s, Distance: %.2f km, Bill Amount: %.2f, Estimated Time: %s, Is Cancelled: %s"),
-        m_driver, m_passenger, m_distance, m_billAmount, m_estimatedTime, m_isCancelled ? _T("Yes") : _T("No"));
+    strOrder.Format(_T("Driver: %s, Passenger: %s, Start: %.2f, %.2f, End: %.2f, %.2f, Distance: %.2f km, Bill Amount: %.2f, Estimated Time: %s, Is Cancelled: %s"),
+        m_driver, m_passenger, m_start[0], m_start[1], m_end[0], m_end[0], m_distance, m_billAmount, m_estimatedTime, m_isCancelled ? _T("Yes") : _T("No"));
     return strOrder;
 }
 
 void Order::FromCString(const CString& strOrder) {
     CString strDriver, strPassenger, strDistance, strBillAmount, strEstimatedTime, strIsCancelled;
-    int nMatches = _stscanf_s(strOrder, _T("Driver: %s, Passenger: %s, Distance: %lf km, Bill Amount: %lf, Estimated Time: %s, Is Cancelled: %s"),
+    int nMatches = _stscanf_s(strOrder, _T("Driver: %s, Passenger: %s, Start: %.2f, %.2f, End: %.2f, %.2f, Distance: %lf km, Bill Amount: %lf, Estimated Time: %s, Is Cancelled: %s"),
         strDriver.GetBufferSetLength(100), 100,
         strPassenger.GetBufferSetLength(100), 100,
+        m_start, m_start+1, m_end, m_end+1,
         &m_distance, &m_billAmount,
         strEstimatedTime.GetBufferSetLength(100), 100,
         strIsCancelled.GetBufferSetLength(100), 100);

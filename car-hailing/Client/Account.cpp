@@ -1,16 +1,14 @@
-#include "pch.h"
 #include "Account.h"
-#include <regex>
 
-// 构造函数
+// Constructors
 Account::Account() {}
 
 Account::Account(const std::string& email, const std::string& username, const std::string& avatar, const std::string& password, const std::string& bio)
     : email(email), username(username), avatar(avatar), password(password), bio(bio) {}
 
-//析构函数
+// Destructor
 Account::~Account() {
-    
+    // Perform any necessary cleanup
 }
 
 // Getters
@@ -55,79 +53,29 @@ void Account::setBio(const std::string& newBio) {
     bio = newBio;
 }
 
-// Convert Account to CString
+// Function to convert Account to CString
 CString Account::ToCString() const {
-    CString cstring;
-    cstring.Format(_T("%s,%s,%s,%s,%s"), email.c_str(), username.c_str(), avatar.c_str(), password.c_str(), bio.c_str());
-    return cstring;
+    CString cstr;
+    cstr.Format(_T("%s,%s,%s,%s,%s"), CString(email.c_str()), CString(username.c_str()), CString(avatar.c_str()), CString(password.c_str()), CString(bio.c_str()));
+    return cstr;
 }
 
-// Convert CString to Account
-Account Account::FromCString(const CString& cstring) {
-    Account account;
-    CString delimiter = _T(",");
-    int start = 0;
-    int end = cstring.Find(delimiter);
-    int index = 0;
+// Function to convert a valid CString back to an Account
+    Account Account::FromCString(const CString& cstring) {
+    CString email, username, avatar, password, bio;
+    int pos = 0;
+    email = cstring.Tokenize(_T(","), pos);
+    username = cstring.Tokenize(_T(","), pos);
+    avatar = cstring.Tokenize(_T(","), pos);
+    password = cstring.Tokenize(_T(","), pos);
+    bio = cstring.Tokenize(_T(","), pos);
 
-    while (end != -1) {
-        CString token = cstring.Mid(start, end - start);
-        std::string tokenStr(token.GetString());
-
-        switch (index) {
-        case 0:
-            account.email = tokenStr;
-            break;
-        case 1:
-            account.username = tokenStr;
-            break;
-        case 2:
-            account.avatar = tokenStr;
-            break;
-        case 3:
-            account.password = tokenStr;
-            break;
-        case 4:
-            account.bio = tokenStr;
-            break;
-        }
-
-        start = end + delimiter.GetLength();
-        end = cstring.Find(delimiter, start);
-        index++;
-    }
-
-    // Retrieve the last token (bio)
-    CString token = cstring.Mid(start);
-    account.bio = std::string(token.GetString());
-
-    return account;
+    return Account(email.GetString(), username.GetString(), avatar.GetString(), password.GetString(), bio.GetString());
 }
 
-// Overload assignment operator to assign from CString to Account
+// Overload the assignment operator to assign a valid CString to an Account instance
 Account& Account::operator=(const CString& cstring) {
     *this = FromCString(cstring);
     return *this;
 }
 
-
-bool Account::IsEmailValid(const std::string& email) {
-    // Use a simple regular expression to check email validity
-    // This is a basic example and may not cover all cases
-    std::regex emailRegex(R"([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})");
-    return std::regex_match(email, emailRegex);
-}
-
-// Constructors
-Account::Account(const std::string& email, const std::string& username, const std::string& avatar, const std::string& password, const std::string& bio) {
-    // Validate email
-    if (!IsEmailValid(email)) {
-        throw InvalidEmailException();
-    }
-
-    this->email = email;
-    this->username = username;
-    this->avatar = avatar;
-    this->password = password;
-    this->bio = bio;
-}

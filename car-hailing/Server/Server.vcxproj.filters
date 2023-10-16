@@ -39,7 +39,7 @@
     <ClInclude Include="Driver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\Client\Order.h">
+    <ClInclude Include="Order.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -59,7 +59,7 @@
     <ClCompile Include="Driver.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\Client\Order.cpp">
+    <ClCompile Include="Order.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

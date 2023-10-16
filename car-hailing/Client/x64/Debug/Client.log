@@ -10,9 +10,9 @@
   CSelectView.cpp
   CUserDlg.cpp
   MainFrm.cpp
-D:\我的电脑\文档\GitHub\car-hailing\car-hailing\Client\MainFrm.cpp(115,15): warning C4101: “info”: 未引用的局部变量
-D:\我的电脑\文档\GitHub\car-hailing\car-hailing\Client\MainFrm.cpp(116,9): warning C4101: “lvitem”: 未引用的局部变量
-D:\我的电脑\文档\GitHub\car-hailing\car-hailing\Client\MainFrm.cpp(242,25): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+E:\LearningMaterials\car-hailing\car-hailing\Client\MainFrm.cpp(115,15): warning C4101: “info”: 未引用的局部变量
+E:\LearningMaterials\car-hailing\car-hailing\Client\MainFrm.cpp(116,9): warning C4101: “lvitem”: 未引用的局部变量
+E:\LearningMaterials\car-hailing\car-hailing\Client\MainFrm.cpp(242,25): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
   MySocket.cpp
   正在生成代码...
-  Client.vcxproj -> D:\我的电脑\文档\GitHub\car-hailing\car-hailing\x64\Debug\Client.exe
+  Client.vcxproj -> E:\LearningMaterials\car-hailing\car-hailing\x64\Debug\Client.exe

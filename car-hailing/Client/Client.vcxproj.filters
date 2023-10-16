@@ -128,8 +128,5 @@
     <Image Include="res\Papper.ico">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="res\map.bmp">
-      <Filter>资源文件</Filter>
-    </Image>
   </ItemGroup>
 </Project>

@@ -1,10 +1,27 @@
 #include "Account.h"
 
+// Function to check if the email is valid
+bool Account::IsEmailValid(const std::string& email) {
+    // Simple email validation for demonstration purposes
+    // You can implement a more thorough email validation logic
+    return email.find('@') != std::string::npos;
+}
+
 // Constructors
 Account::Account() {}
 
-Account::Account(const std::string& email, const std::string& username, const std::string& avatar, const std::string& password, const std::string& bio)
-    : email(email), username(username), avatar(avatar), password(password), bio(bio) {}
+Account::Account(const std::string& email, const std::string& username, const std::string& avatar, const std::string& password, const std::string& bio) {
+    if (!IsEmailValid(email)) {
+        // Handle invalid email (you can throw an exception or handle it as needed)
+        throw std::invalid_argument("Invalid email address");
+    }
+
+    this->email = email;
+    this->username = username;
+    this->avatar = avatar;
+    this->password = password;
+    this->bio = bio;
+}
 
 // Destructor
 Account::~Account() {
@@ -52,7 +69,6 @@ void Account::setPassword(const std::string& newPassword) {
 void Account::setBio(const std::string& newBio) {
     bio = newBio;
 }
-
 // Function to convert Account to CString
 CString Account::ToCString() const {
     CString cstr;
@@ -61,8 +77,8 @@ CString Account::ToCString() const {
 }
 
 // Function to convert a valid CString back to an Account
-    Account Account::FromCString(const CString& cstring) {
-    CString email, username, avatar, password, bio;
+Account Account::FromCString(const CString& cstring) {
+    CStringA email, username, avatar, password, bio;
     int pos = 0;
     email = cstring.Tokenize(_T(","), pos);
     username = cstring.Tokenize(_T(","), pos);
@@ -70,7 +86,7 @@ CString Account::ToCString() const {
     password = cstring.Tokenize(_T(","), pos);
     bio = cstring.Tokenize(_T(","), pos);
 
-    return Account(email.GetString(), username.GetString(), avatar.GetString(), password.GetString(), bio.GetString());
+    return Account(static_cast<const char*>(email), static_cast<const char*>(username), static_cast<const char*>(avatar), static_cast<const char*>(password), static_cast<const char*>(bio));
 }
 
 // Overload the assignment operator to assign a valid CString to an Account instance
@@ -78,4 +94,3 @@ Account& Account::operator=(const CString& cstring) {
     *this = FromCString(cstring);
     return *this;
 }
-

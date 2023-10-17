@@ -3,6 +3,7 @@
 
 #include <string>
 #include <atlstr.h>  // 包含CString所需的头文件
+#include <stdexcept>  // 包含std::invalid_argument
 
 class Account {
 private:
@@ -11,6 +12,9 @@ private:
     std::string avatar;
     std::string password;
     std::string bio;
+
+    // Function to check if the email is valid
+    bool IsEmailValid(const std::string& email);
 
 public:
     // Constructors

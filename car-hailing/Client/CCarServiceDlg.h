@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#define NM_START_ORDER (WM_USER+2029)
 
 // CCarServiceDlg 窗体视图
 

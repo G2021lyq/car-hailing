@@ -12,6 +12,7 @@
 #include "Order.h"
 #include "HistoryRecord.h"
 #include "MyFile.h"
+#include "Account.h"
 
 
 #ifdef _DEBUG
@@ -185,7 +186,7 @@ void CServerDlg::ParserPkt(MySocket* from)
 		// 与SOCKET通信的用户的称谓
 		from->m_Player = SendBuff + 1; // 名称的记录会在为空时停止
 
-		MessageBox(from->m_Player);
+		//MessageBox(from->m_Player);
 
 		// 向列表中插入一项，使用了锁的知识
 		m_csList.Lock();
@@ -294,33 +295,6 @@ void CServerDlg::OnBnClickedButtonStart()
 
 void CServerDlg::CreatDriver()
 {
-	// 打开文件以进行写入操作，使用二进制方式
-	CString filePath = _T("./Accounts.txt");
-	CStdioFile file;
-	if (file.Open(filePath, CFile::modeCreate | CFile::modeWrite | CFile::modeNoTruncate | CFile::typeBinary)) {
-		// 将宽字符字符串写入文件
-		wchar_t strToWrite[] = L"这是一行宽字符文字";
-		int strLength = wcslen(strToWrite) * sizeof(wchar_t);
-
-		file.Write(strToWrite, strLength);
-
-		// 关闭文件
-		file.Close();
-	}
-
-	//生成一个Order类
-	double point_1[2] = { 1.345,2.567 };
-	double point_2[2] = { 21.567,10.786 };
-
-	Order aOrder(L"driver", L"passenger", point_1, point_2);
-	CString OrderStr = aOrder.ToCString();
-	//MessageBox(OrderStr);
-
-	Order b;
-	b = OrderStr;
-	OrderStr = b.ToCString();
-	MessageBox(OrderStr);
-
 	// 生成3个司机对象并添加到向量中
 	for (int i = 0; i < 3; ++i) {
 		Driver driver(count);

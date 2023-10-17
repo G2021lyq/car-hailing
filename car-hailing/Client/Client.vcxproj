@@ -236,6 +236,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\bg .bmp" />
+    <Image Include="res\bitmap1.bmp" />
     <Image Include="res\car.bmp" />
     <Image Include="res\Client.ico" />
     <Image Include="res\ClientDoc.ico" />

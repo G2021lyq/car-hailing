@@ -32,7 +32,7 @@ void CCarContinueDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CCarContinueDlg, CFormView)
 
 	ON_MESSAGE(NM_START_SERVICE, OnMyChange)
-//	ON_WM_PAINT()
+	//	ON_WM_PAINT()
 	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
@@ -78,8 +78,8 @@ LRESULT CCarContinueDlg::OnMyChange(WPARAM wParam, LPARAM lParam)
 		//测试数据
 		start[0] = 2;
 		start[1] = 2;
-		end[0] = 14;
-		end[1] = 14;
+		m_end[0] = 14;
+		m_end[1] = 14;
 		driver[0] = 3;
 		driver[1] = 7;
 
@@ -88,6 +88,7 @@ LRESULT CCarContinueDlg::OnMyChange(WPARAM wParam, LPARAM lParam)
 		(this->GetDlgItem(IDC_STATIC))->GetWindowRect(&rect);  // 获取控件相对于屏幕的位置
 		ScreenToClient(rect); // 转化为相对于客户区的位置
 		GetDlgItem(IDC_STATIC)->MoveWindow(rect.left, rect.top, 560, 420, false);
+
 		CDC* pClientDC = GetDC();
 		(this->GetDlgItem(IDC_STATIC))->GetWindowRect(&rect);  // 获取控件相对于屏幕的位置
 		ScreenToClient(rect); // 转化为相对于客户区的位置
@@ -176,10 +177,10 @@ void CCarContinueDlg::OnTimer(UINT_PTR nIDEvent)
 		pdc->Rectangle(m_map[start[0] - 1][start[1] - 1]);
 		pdc->SelectObject(pOdBrs);
 
-		if (end[0] < start[0]) start[0] -= 1;
-		else if (end[0] > start[0]) start[0] += 1;
+		if (m_end[0] < start[0]) start[0] -= 1;
+		else if (m_end[0] > start[0]) start[0] += 1;
 		else {
-			if (end[1] < start[1]) start[1] -= 1;
+			if (m_end[1] < start[1]) start[1] -= 1;
 			else start[1] += 1;
 		}
 		CBrush* p1dBrs = pdc->SelectObject(&m_brush[1]);
@@ -187,9 +188,9 @@ void CCarContinueDlg::OnTimer(UINT_PTR nIDEvent)
 		pdc->Rectangle(m_map[start[0] - 1][start[1] - 1]);
 		pdc->DeleteDC();
 	}
-	if (start[1] == end[1] && start[0] == end[0])
+	if (start[1] == m_end[1] && start[0] == m_end[0])
 		KillTimer(1);
-		//可以加 结束行程flag
+	//可以加 结束行程flag
 
 	CFormView::OnTimer(nIDEvent);
 }

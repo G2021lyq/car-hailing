@@ -31,8 +31,13 @@ Order::Order(const CString& passenger, double* start, double* end)
 
 
 Order::Order(const CString& driver, const CString& passenger, double* start, double* end)
-	: m_driver(driver), m_passenger(passenger), m_start(start), m_end(end) {
+	: m_driver(driver), m_passenger(passenger) {
 	// 在构造函数中初始化订单的各个属性
+		//坐标赋值
+	m_start[0] = start[0];
+	m_start[1] = start[1];
+	m_end[0] = end[0];
+	m_end[1] = end[1];
 
 	//计算两点的距离
 	m_distance = sqrt(pow(m_end[0] - m_start[0], 2) + pow(m_end[1] - m_start[1], 2));
@@ -46,16 +51,6 @@ Order::Order(const CString& driver, const CString& passenger, double* start, dou
 	m_estimatedTime = CalculateEstimatedTime();
 
 	m_isCancelled = false;
-}
-
-//返回坐标
-double* Order::GetStart()
-{
-	return m_start;
-}
-double* Order::GetEnd()
-{
-	return m_end;
 }
 
 // 获取司机名称

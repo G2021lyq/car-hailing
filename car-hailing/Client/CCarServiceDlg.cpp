@@ -63,6 +63,8 @@ BEGIN_MESSAGE_MAP(CCarServiceDlg, CFormView)
 	ON_EN_CHANGE(IDC_ENDPOSX, &CCarServiceDlg::OnEnChangeEndposx)
 	ON_EN_CHANGE(IDC_ENDPOSY, &CCarServiceDlg::OnEnChangeEndposy)
 	ON_BN_CLICKED(IDC_STARTMATCH, &CCarServiceDlg::OnBnClickedStartmatch)
+
+	ON_MESSAGE(NM_START_ORDER, OnMyChange)
 END_MESSAGE_MAP()
 
 
@@ -88,10 +90,8 @@ void CCarServiceDlg::Dump(CDumpContext& dc) const
 
 void CCarServiceDlg::OnBnClickedButton2()
 {
-
-
+	// TODO: 在此添加控件通知处理程序代码
 	// 找到司机成功，向主窗口，发送NM_OK消息，参数如下
-
 	//生成driver类
 	int count = 0;
 	Driver driver(count);
@@ -102,22 +102,22 @@ void CCarServiceDlg::OnBnClickedButton2()
 	Order aOrder(driver.ToString(), L"passenger", point_1, point_2);
 
 	CString myString = aOrder.ToCString();
-	MessageBox(myString);
+	//MessageBox(myString);
 
 	LPARAM lParam = reinterpret_cast<LPARAM>(static_cast<LPCTSTR>(myString));
 	::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_OK, (WPARAM)NM_OK, lParam);
-
-	//CMainFrame* pMainFrame = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
-	//pMainFrame->PostMessage(NM_OK, (WPARAM)NM_OK, reinterpret_cast<LPARAM>(myWCharString));
-
-	// TODO: 在此添加控件通知处理程序代码
 }
 
 LRESULT CCarServiceDlg::OnMyChange(WPARAM wParam, LPARAM lParam)
 {
 	switch (wParam)
 	{
+	case (NM_START_ORDER):
+	{
+		//TODO::: 初始化各种参数
+		MessageBox(L"123");
 
+	}
 
 	}
 	return 0;
@@ -235,7 +235,7 @@ void CCarServiceDlg::OnEnChangeEndposy()
 void CCarServiceDlg::OnBnClickedStartmatch()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	
+
 	//点击开始匹配，将相关信息上传服务器
 	//先把相关信息弹出消息框提示再说
 
@@ -244,6 +244,6 @@ void CCarServiceDlg::OnBnClickedStartmatch()
 		id, carModel, currentPositionX, currentPositionY,
 		pickUpAreaLeftTopX, pickUpAreaLeftTopY, pickUpAreaRightBottomX, pickUpAreaRightBottomY);*/
 
-	/*CString str = (_T("出发点坐标：（%s,%s）终点坐标：（%s,%s）车的种类：%s 发车时间：%s"), myclient.StartX, myclient.StartY, myclient.EndX, myclient.EndY, myclient.CarType, myclient.TimerType);
-	AfxMessageBox(str);*/
+		/*CString str = (_T("出发点坐标：（%s,%s）终点坐标：（%s,%s）车的种类：%s 发车时间：%s"), myclient.StartX, myclient.StartY, myclient.EndX, myclient.EndY, myclient.CarType, myclient.TimerType);
+		AfxMessageBox(str);*/
 }

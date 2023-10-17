@@ -19,6 +19,9 @@
 
 #define NM_D (WM_USER+2027)
 
+#define NM_START_ACCOUNT (WM_USER+2028)
+#define NM_START_ORDER (WM_USER+2029)
+
 
 #include "MySocket.h"
 

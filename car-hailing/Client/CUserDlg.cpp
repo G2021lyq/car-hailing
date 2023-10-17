@@ -32,6 +32,8 @@ BEGIN_MESSAGE_MAP(CUserDlg, CFormView)
 
 	ON_MESSAGE(NM_TEST_SOCKET, OnMyChange)
 	ON_EN_CHANGE(IDC_EDIT2, &CUserDlg::OnEnChangeEdit2)
+	ON_MESSAGE(NM_START_ACCOUNT, OnMyChange)
+
 END_MESSAGE_MAP()
 
 
@@ -83,11 +85,27 @@ LRESULT CUserDlg::OnMyChange(WPARAM wParam, LPARAM lParam)
 {
 	switch (wParam)
 	{
-	case NM_TEST_SOCKET:
+	case (NM_TEST_SOCKET):
+	{
 		// 获取到参数
 		wchar_t* myString = reinterpret_cast<wchar_t*>(lParam);
-		//MessageBox(myString);
+		MessageBox(myString);
 		m_ShowMessage.SetWindowText(myString); // 在CUserDlg内操作test_edit
+		break;
+
+	}
+	case (NM_START_ACCOUNT):
+	{
+
+		CString AccountStr = static_cast<LPCTSTR>(reinterpret_cast<LPCWSTR>(lParam));
+		MessageBox(AccountStr);
+		//m_Account = AccountStr;
+		//TODO::
+
+
+		break;
+	}
+	case (3):
 		break;
 	}
 	return 0;

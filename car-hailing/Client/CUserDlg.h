@@ -1,6 +1,9 @@
 ﻿#pragma once
 
 #define NM_TEST_SOCKET (WM_USER+2025)
+#define NM_START_ACCOUNT (WM_USER+2028)
+
+#include "Account.h"
 
 // CUserDlg 窗体视图
 
@@ -34,6 +37,9 @@ public:
 	//自定义消息处理函数
 	afx_msg LRESULT OnMyChange(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnEnChangeEdit2();
+
+public:
+	Account m_Account;
 };
 
 

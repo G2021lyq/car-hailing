@@ -186,7 +186,7 @@ void CServerDlg::ParserPkt(MySocket* from)
 		// 与SOCKET通信的用户的称谓
 		from->m_Player = SendBuff + 1; // 名称的记录会在为空时停止
 
-		MessageBox(from->m_Player);
+		//MessageBox(from->m_Player);
 
 		// 向列表中插入一项，使用了锁的知识
 		m_csList.Lock();
@@ -295,20 +295,6 @@ void CServerDlg::OnBnClickedButtonStart()
 
 void CServerDlg::CreatDriver()
 {
-
-	//生成一个Order类
-	double point_1[2] = { 1.345,2.567 };
-	double point_2[2] = { 21.567,10.786 };
-
-	Order aOrder(L"driver", L"passenger", point_1, point_2);
-	CString OrderStr = aOrder.ToCString();
-	//MessageBox(OrderStr);
-
-	Order b;
-	b = OrderStr;
-	OrderStr = b.ToCString();
-	MessageBox(OrderStr);
-
 	// 生成3个司机对象并添加到向量中
 	for (int i = 0; i < 3; ++i) {
 		Driver driver(count);

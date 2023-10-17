@@ -15,6 +15,7 @@
 #include "CSelectView.h"
 #include "CDisplayView.h"
 #include "CRegisterDlg.h"
+#include "Account.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -59,9 +60,19 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 {
 	CCreateContext Context;
 	CFormView* pNewView = nullptr; // 在外部定义变量
+
+	Account a(L"1@qq.com", L"username", L"avatar", L"123", L"这个人很懒什么是都没写");
+
+	CStringW receivedString;
+	wchar_t Buff[2048];
+
 	switch (wParam)
 	{
 	case(NM_A):
+	{
+		receivedString = a.ToCString();
+		wsprintf(Buff, L"%s", receivedString);
+
 		Context.m_pNewViewClass = RUNTIME_CLASS(CUserDlg);
 		Context.m_pCurrentFrame = this;
 		Context.m_pLastView = (CFormView*)m_spliter.GetPane(0, 1);
@@ -73,8 +84,9 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		pNewView->OnInitialUpdate();
 		m_spliter.SetActivePane(0, 1);
 
+		pNewView->PostMessage(NM_START_ACCOUNT, (WPARAM)NM_START_ACCOUNT, reinterpret_cast<LPARAM>(Buff));
 		break;
-
+	}
 	case(NM_B):
 
 		Context.m_pNewViewClass = RUNTIME_CLASS(CCarServiceDlg);
@@ -88,11 +100,11 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		pNewView->OnInitialUpdate();
 		m_spliter.SetActivePane(0, 1);
 
+		pNewView->PostMessage(NM_START_ORDER, (WPARAM)NM_START_ORDER, 0);
 		break;
 
 	case(NM_OK):
 		CStringW receivedString = static_cast<LPCTSTR>(reinterpret_cast<LPCWSTR>(lParam));
-		wchar_t Buff[2048];
 		wsprintf(Buff, L"%s", receivedString);
 
 		Context.m_pNewViewClass = RUNTIME_CLASS(CCarContinueDlg);
@@ -106,14 +118,8 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		pNewView->OnInitialUpdate();
 		m_spliter.SetActivePane(0, 1);
 
-		receivedString = static_cast<LPCTSTR>(reinterpret_cast<LPCWSTR>(lParam));
-		//发送消息
-		//LPARAM lParam_2 = reinterpret_cast<LPARAM>(static_cast<LPCTSTR>(receivedString));
-		//pNewView->PostMessage(NM_START_SERVICE, (WPARAM)NM_START_SERVICE, (LPARAM)lParam);
-
 		pNewView->PostMessage(NM_START_SERVICE, (WPARAM)NM_START_SERVICE, reinterpret_cast<LPARAM>(Buff));
 		break;
-
 	}
 
 	return 0;
@@ -148,7 +154,7 @@ void CMainFrame::ParserPkt(MySocket* m_server) {
 	switch (pkt[0])
 	{
 	case 0x00://0x00是一个测试的信息
-		MessageBox(pkt + 1);
+		//MessageBox(pkt + 1);
 		break;
 	case 0x10:
 		wsprintf(GetBuff, L"%s", pkt + 1);

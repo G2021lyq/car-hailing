@@ -183,7 +183,6 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Account.h" />
     <ClInclude Include="CCarContinueDlg.h" />
     <ClInclude Include="CCarServiceDlg.h" />
     <ClInclude Include="CDisplayView.h" />
@@ -204,7 +203,6 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Account.cpp" />
     <ClCompile Include="CCarContinueDlg.cpp" />
     <ClCompile Include="CCarServiceDlg.cpp" />
     <ClCompile Include="CDisplayView.cpp" />

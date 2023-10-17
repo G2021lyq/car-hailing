@@ -34,17 +34,6 @@ public:
 	//自定义消息处理函数
 	afx_msg LRESULT OnMyChange(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnEnChangeEdit2();
-	afx_msg void OnBnClickedButton1();
-
-
-
-
-//
-public:
-	CString m_strUsername;// 用户名
-	CString m_strPassword;// 密码
-	int m_nSelectedAvatar;// 选中的头像编号
-	CString m_strIntroduction;// 个人简介
 };
 
 

@@ -121,11 +121,9 @@
     <ResourceCompile Include="Client.rc">
       <Filter>资源文件</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\Client.rc2">
+    <ResourceCompile Include="res\Client.rc2">
       <Filter>资源文件</Filter>
-    </None>
+    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\ClientDoc.ico">

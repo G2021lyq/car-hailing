@@ -47,6 +47,8 @@ void CCarServiceDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_ENDPOSX, m_valendposx);
 	DDX_Text(pDX, IDC_ENDPOSY, m_valendposy);
 	DDX_Control(pDX, IDC_STARTMATCH, m_startmatch);
+	DDX_Control(pDX, IDC_PROGRESS1, m_progressbar);
+	DDX_Control(pDX, IDC_SHOWTIME, m_showtime);
 }
 
 BEGIN_MESSAGE_MAP(CCarServiceDlg, CFormView)
@@ -63,8 +65,7 @@ BEGIN_MESSAGE_MAP(CCarServiceDlg, CFormView)
 	ON_EN_CHANGE(IDC_ENDPOSX, &CCarServiceDlg::OnEnChangeEndposx)
 	ON_EN_CHANGE(IDC_ENDPOSY, &CCarServiceDlg::OnEnChangeEndposy)
 	ON_BN_CLICKED(IDC_STARTMATCH, &CCarServiceDlg::OnBnClickedStartmatch)
-
-	ON_MESSAGE(NM_START_ORDER, OnMyChange)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -90,8 +91,10 @@ void CCarServiceDlg::Dump(CDumpContext& dc) const
 
 void CCarServiceDlg::OnBnClickedButton2()
 {
-	// TODO: 在此添加控件通知处理程序代码
+
+
 	// 找到司机成功，向主窗口，发送NM_OK消息，参数如下
+
 	//生成driver类
 	int count = 0;
 	Driver driver(count);
@@ -102,22 +105,22 @@ void CCarServiceDlg::OnBnClickedButton2()
 	Order aOrder(driver.ToString(), L"passenger", point_1, point_2);
 
 	CString myString = aOrder.ToCString();
-	//MessageBox(myString);
+	MessageBox(myString);
 
 	LPARAM lParam = reinterpret_cast<LPARAM>(static_cast<LPCTSTR>(myString));
 	::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_OK, (WPARAM)NM_OK, lParam);
+
+	//CMainFrame* pMainFrame = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
+	//pMainFrame->PostMessage(NM_OK, (WPARAM)NM_OK, reinterpret_cast<LPARAM>(myWCharString));
+
+	// TODO: 在此添加控件通知处理程序代码
 }
 
 LRESULT CCarServiceDlg::OnMyChange(WPARAM wParam, LPARAM lParam)
 {
 	switch (wParam)
 	{
-	case (NM_START_ORDER):
-	{
-		//TODO::: 初始化各种参数
-		MessageBox(L"123");
 
-	}
 
 	}
 	return 0;
@@ -235,7 +238,7 @@ void CCarServiceDlg::OnEnChangeEndposy()
 void CCarServiceDlg::OnBnClickedStartmatch()
 {
 	// TODO: 在此添加控件通知处理程序代码
-
+	
 	//点击开始匹配，将相关信息上传服务器
 	//先把相关信息弹出消息框提示再说
 
@@ -244,6 +247,74 @@ void CCarServiceDlg::OnBnClickedStartmatch()
 		id, carModel, currentPositionX, currentPositionY,
 		pickUpAreaLeftTopX, pickUpAreaLeftTopY, pickUpAreaRightBottomX, pickUpAreaRightBottomY);*/
 
-		/*CString str = (_T("出发点坐标：（%s,%s）终点坐标：（%s,%s）车的种类：%s 发车时间：%s"), myclient.StartX, myclient.StartY, myclient.EndX, myclient.EndY, myclient.CarType, myclient.TimerType);
-		AfxMessageBox(str);*/
+	CString cstr;
+	cstr.Format(_T("出发点坐标：（%s,%s）终点坐标：（%s,%s）车的种类：%s 发车时间：%s"), myclient.StartX, myclient.StartY, myclient.EndX, myclient.EndY, myclient.CarType, myclient.TimerType);
+	AfxMessageBox(cstr);
+	
+
+	//当我们点击这个按钮时
+	// 我们要求立刻叫车
+	if (myclient.TimerType == _T("0")) {
+		//进度条君你退下
+	}
+	//我们要求等待30秒再叫车，此时进度条显现并开始移动
+	else if(myclient.TimerType == _T("20")) {
+		m_progressbar.ShowWindow(SW_SHOW);
+		m_showtime.ShowWindow(SW_SHOW);
+		//进度条初始化
+		//范围
+		m_progressbar.SetRange(0, 30);
+		//设置当前位置
+		m_progressbar.SetPos(0);
+		//设置进度条每步前进的长度
+		m_progressbar.SetStep(1);
+		//打开计时器，此计时器ID为1，一秒跑一次
+		SetTimer(1, 1000, NULL);
+		//现在等待埋的雷炸掉，会调用OnTimer函数处理，转
+	}
+	//这里是等待10分钟再叫车，此时进度条显现并开始移动
+	//这里我并没有写显示时间数据的逻辑（）
+	else {
+		m_progressbar.ShowWindow(SW_SHOW);
+		//m_showtime.ShowWindow(SW_SHOW);
+		m_progressbar.SetRange(0, 30);
+		//设置当前位置
+		m_progressbar.SetPos(0);
+		//设置进度条每步前进的长度
+		m_progressbar.SetStep(0.05);
+		//打开计时器，此计时器ID为1，一秒跑一次
+		SetTimer(1, 1000, NULL);
+	}
+}
+
+
+void CCarServiceDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	if (m_progressbar.GetPos() == 30) {
+		//计时器时间已满，关闭定时器
+		KillTimer(1);
+		//等待时间已满需要发送一个消息
+
+
+
+
+	}
+	else {
+		//没满就跑
+		m_progressbar.StepIt();
+		//设定字符串显示
+		CString cstr, cstr2;
+		cstr.Format(_T("00:%d"), 30 - m_progressbar.GetPos());
+		cstr2.Format(_T("00:0%d"), 30 - m_progressbar.GetPos());
+
+		if (m_progressbar.GetPos() < 21) {
+			SetDlgItemText(IDC_SHOWTIME, cstr);
+		}
+		else {
+			SetDlgItemText(IDC_SHOWTIME, cstr2);
+		}
+	}
+
+	CFormView::OnTimer(nIDEvent);
 }

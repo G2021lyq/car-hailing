@@ -58,6 +58,9 @@ public:
 	afx_msg void OnEnChangeEndposy();
 	CButton m_startmatch;
 	afx_msg void OnBnClickedStartmatch();
+	CProgressCtrl m_progressbar;
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	CEdit m_showtime;
 };
 
 //写一个结构体用来传递信息

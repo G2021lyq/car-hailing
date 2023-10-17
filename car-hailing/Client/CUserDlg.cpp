@@ -13,6 +13,10 @@ IMPLEMENT_DYNCREATE(CUserDlg, CFormView)
 
 CUserDlg::CUserDlg()
 	: CFormView(IDD_DIALOG_User)
+	, m_strUsername(_T(""))
+	, m_strPassword(_T(""))
+	, m_nSelectedAvatar(0)
+	, m_strIntroduction(_T(""))
 {
 
 }
@@ -25,6 +29,11 @@ void CUserDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT2, m_ShowMessage);
+	
+	DDX_Text(pDX, IDC_EDIT_username, m_strUsername);
+	DDX_Text(pDX, IDC_EDIT_password, m_strPassword);
+	DDX_CBIndex(pDX, IDC_COMBO_avatar, m_nSelectedAvatar);
+	DDX_Text(pDX, IDC_EDIT_bio, m_strIntroduction);
 }
 
 BEGIN_MESSAGE_MAP(CUserDlg, CFormView)
@@ -32,6 +41,7 @@ BEGIN_MESSAGE_MAP(CUserDlg, CFormView)
 
 	ON_MESSAGE(NM_TEST_SOCKET, OnMyChange)
 	ON_EN_CHANGE(IDC_EDIT2, &CUserDlg::OnEnChangeEdit2)
+	ON_BN_CLICKED(IDC_BUTTON1, &CUserDlg::OnBnClickedButton1)
 END_MESSAGE_MAP()
 
 
@@ -103,3 +113,11 @@ void CUserDlg::OnEnChangeEdit2()
 
 	// TODO:  在此添加控件通知处理程序代码
 }
+
+
+void CUserDlg::OnBnClickedButton1()
+{
+	// TODO: 在此添加控件通知处理程序代码
+}
+
+

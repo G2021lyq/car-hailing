@@ -1,5 +1,5 @@
 #include "Account.h"
-
+#include"pch.h"
 
 // 检验邮箱是否合法的函数
 bool Account::IsEmailValid(const CString& email) {

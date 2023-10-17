@@ -23,7 +23,14 @@
 #define IDC_EDIT3                       1002
 #define IDC_BUTTON2                     1003
 #define IDC_BUTTON3                     1004
+#define IDC_EDIT_username               1004
 #define IDC_EDIT2                       1005
+#define IDC_EDIT_password               1006
+#define IDC_EDIT_bio                    1007
+#define IDC_COMBO_icons                 1008
+#define IDC_COMBO_avatar                1008
+#define IDC_EDIT_email                  1009
+#define IDC_BUTTON4                     1010
 
 // Next default values for new objects
 // 
@@ -31,7 +38,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        322
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1006
+#define _APS_NEXT_CONTROL_VALUE         1011
 #define _APS_NEXT_SYMED_VALUE           313
 #endif
 #endif

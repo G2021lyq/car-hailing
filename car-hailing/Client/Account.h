@@ -5,37 +5,39 @@
 #include <atlstr.h>  // 包含CString所需的头文件
 #include <stdexcept>  // 包含std::invalid_argument
 
+
+
 class Account {
 private:
-    std::string email;
-    std::string username;
-    std::string avatar;
-    std::string password;
-    std::string bio;
+    CString email;
+    CString username;
+    CString avatar;
+    CString password;
+    CString bio;
 
-    // Function to check if the email is valid
-    bool IsEmailValid(const std::string& email);
+    // 检验邮箱是否合法的函数
+    bool IsEmailValid(const CString& email);
 
 public:
-    // Constructors
+    // 构造函数
     Account();
-    Account(const std::string& email, const std::string& username, const std::string& avatar, const std::string& password, const std::string& bio);
+    Account(const CString& email, const CString& username, const CString& avatar, const CString& password, const CString& bio);
 
-    // Destructor
+    // 析构函数
     ~Account();
 
-    // Other member functions (getters, setters, etc.)
-    std::string getEmail() const;
-    std::string getUsername() const;
-    std::string getAvatar() const;
-    std::string getPassword() const;
-    std::string getBio() const;
+    //  getters, setters
+    CString getEmail() const;
+    CString getUsername() const;
+    CString getAvatar() const;
+    CString getPassword() const;
+    CString getBio() const;
 
-    void setEmail(const std::string& email);
-    void setUsername(const std::string& username);
-    void setAvatar(const std::string& avatar);
-    void setPassword(const std::string& password);
-    void setBio(const std::string& bio);
+    void setEmail(const CString& email);
+    void setUsername(const CString& username);
+    void setAvatar(const CString& avatar);
+    void setPassword(const CString& password);
+    void setBio(const CString& bio);
 
     // Function to convert Account to CString
     CString ToCString() const;
@@ -46,5 +48,6 @@ public:
     // Overload the assignment operator to assign a valid CString to an Account instance
     Account& operator=(const CString& cstring);
 };
+
 
 #endif // ACCOUNT_H

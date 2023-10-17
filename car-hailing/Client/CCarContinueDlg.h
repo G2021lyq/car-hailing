@@ -33,7 +33,20 @@ protected:
 
 public:
 	//自定义消息处理函数
+	//图片刷
+	CBrush m_brush[3];
+	//地图大小
+	CRect m_map[20][15];
+	///CPen m_pen;
+	int driver[2];
+	int start[2];
+	int end[2];
+	//是否接到客
+	BOOL m_ispicked = false;
+	int driverspeed = 1000; //ms
 	afx_msg LRESULT OnMyChange(WPARAM wParam, LPARAM lParam);
+	//afx_msg void OnPaint();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };
 
 

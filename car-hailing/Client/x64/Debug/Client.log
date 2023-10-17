@@ -1,0 +1,7 @@
+﻿  CCarContinueDlg.cpp
+  MainFrm.cpp
+E:\LearningMaterials\car-hailing\car-hailing\Client\MainFrm.cpp(132,15): warning C4101: “info”: 未引用的局部变量
+E:\LearningMaterials\car-hailing\car-hailing\Client\MainFrm.cpp(133,9): warning C4101: “lvitem”: 未引用的局部变量
+E:\LearningMaterials\car-hailing\car-hailing\Client\MainFrm.cpp(259,25): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+  正在生成代码...
+  Client.vcxproj -> E:\LearningMaterials\car-hailing\car-hailing\x64\Debug\Client.exe

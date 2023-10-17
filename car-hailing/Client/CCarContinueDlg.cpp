@@ -16,7 +16,7 @@ IMPLEMENT_DYNCREATE(CCarContinueDlg, CFormView)
 CCarContinueDlg::CCarContinueDlg()
 	: CFormView(IDD_DIALOG_CarContinue)
 {
-
+	//m_pen.CreatePen(PS_SOLID, 4, RGB(244, 244, 244));
 }
 
 CCarContinueDlg::~CCarContinueDlg()
@@ -32,6 +32,8 @@ void CCarContinueDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CCarContinueDlg, CFormView)
 
 	ON_MESSAGE(NM_START_SERVICE, OnMyChange)
+//	ON_WM_PAINT()
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -62,9 +64,132 @@ LRESULT CCarContinueDlg::OnMyChange(WPARAM wParam, LPARAM lParam)
 		MessageBox(OrderStr);
 
 		//ToDo::
+		//读取三个坐标
+		//Order order;
+		//order.FromCString(OrderStr);
+		//start = (int*)order.GetStart();
+		//end = (int*)order.GetEnd();
+		//Driver Cdriver;
+		//MessageBox(order.GetDriver());
+		//Cdriver.FromCString(order.GetDriver());
+		//driver[0] = Cdriver.getCurrentPositionX();
+		//driver[1] = Cdriver.getCurrentPositionY();
+
+		//测试数据
+		start[0] = 2;
+		start[1] = 2;
+		end[0] = 14;
+		end[1] = 14;
+		driver[0] = 3;
+		driver[1] = 7;
+
+
+		CRect rect;
+		(this->GetDlgItem(IDC_STATIC))->GetWindowRect(&rect);  // 获取控件相对于屏幕的位置
+		ScreenToClient(rect); // 转化为相对于客户区的位置
+		GetDlgItem(IDC_STATIC)->MoveWindow(rect.left, rect.top, 560, 420, false);
+		CDC* pClientDC = GetDC();
+		(this->GetDlgItem(IDC_STATIC))->GetWindowRect(&rect);  // 获取控件相对于屏幕的位置
+		ScreenToClient(rect); // 转化为相对于客户区的位置
+
+		CBitmap carbmp, mapbmp, userbmp;
+		carbmp.LoadBitmapW(IDB_CAR);
+		mapbmp.LoadBitmapW(IDB_BG);
+		userbmp.LoadBitmapW(IDB_USER);
+		m_brush[0].CreatePatternBrush(&mapbmp);
+		m_brush[1].CreatePatternBrush(&carbmp);
+		m_brush[2].CreatePatternBrush(&userbmp);
+
+		CDC* pdc = GetDlgItem(IDC_STATIC)->GetWindowDC();
+		CBrush* pOldBrs = pdc->SelectObject(&m_brush[0]);
+		//黑边不知道如何去除，要么出现白边
+		//CPen* pOldPen = pdc->SelectObject(&m_pen);
+		//画出地图 i为行
+		for (int i = 0; i < 15; i++) {
+			for (int j = 0; j < 20; j++) {
+				m_map[i][j].left = 0 + j * 28;
+				m_map[i][j].right = 28 + j * 28;
+				m_map[i][j].top = 0 + i * 28;
+				m_map[i][j].bottom = 28 + i * 28;
+				pdc->SelectObject(&m_brush[0]);
+				pdc->Rectangle(m_map[i][j]);
+			}
+		}
+		if (!m_ispicked) {
+			//也可以加一个 目的地的图
+			pdc->SelectObject(&m_brush[2]);
+			pdc->Rectangle(m_map[start[0] - 1][start[1] - 1]);
+			pdc->SelectObject(&m_brush[1]);
+			pdc->Rectangle(m_map[driver[0] - 1][driver[1] - 1]);
+		}
+		pdc->SelectObject(&pOldBrs);
+		SetTimer(1, driverspeed, NULL);
+
 		break;
 	}
 	return 0;
 
 }
 
+
+
+//void CCarContinueDlg::OnPaint()
+//{
+//	// CPaintDC dc(this); // device context for painting
+//	// TODO: 在此处添加消息处理程序代码
+//	// 不为绘图消息调用 CFormView::OnPaint()
+//
+//
+//	CPaintDC pDC(this);
+//	SetTimer(1, 1000, NULL);
+//}
+
+
+void CCarContinueDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+	UpdateData(true);
+	CDC* pdc = GetDlgItem(IDC_STATIC)->GetWindowDC();
+	CBrush* pOdBrs = pdc->SelectObject(&m_brush[0]);
+	// cpen可以把边描成白色，但是部分线看不清楚
+	//CPen* pOldPen = pdc->SelectObject(&m_pen);
+	if (!m_ispicked)
+	{
+		pdc->Rectangle(m_map[driver[0] - 1][driver[1] - 1]);
+		pdc->SelectObject(pOdBrs);
+		if (start[0] < driver[0]) driver[0] -= 1;
+		else if (start[0] > driver[0]) driver[0] += 1;
+		else {
+			if (start[1] < driver[1]) driver[1] -= 1;
+			else driver[1] += 1;
+		}
+		CBrush* p1dBrs = pdc->SelectObject(&m_brush[1]);
+		pdc->SelectObject(&m_brush[1]);
+		pdc->Rectangle(m_map[driver[0] - 1][driver[1] - 1]);
+		pdc->DeleteDC();
+		if (start[0] == driver[0] && start[1] == driver[1])
+			m_ispicked = true;
+	}
+	else {
+
+		pdc->Rectangle(m_map[start[0] - 1][start[1] - 1]);
+		pdc->SelectObject(pOdBrs);
+
+		if (end[0] < start[0]) start[0] -= 1;
+		else if (end[0] > start[0]) start[0] += 1;
+		else {
+			if (end[1] < start[1]) start[1] -= 1;
+			else start[1] += 1;
+		}
+		CBrush* p1dBrs = pdc->SelectObject(&m_brush[1]);
+		pdc->SelectObject(&m_brush[1]);
+		pdc->Rectangle(m_map[start[0] - 1][start[1] - 1]);
+		pdc->DeleteDC();
+	}
+	if (start[1] == end[1] && start[0] == end[0])
+		KillTimer(1);
+		//可以加 结束行程flag
+
+	CFormView::OnTimer(nIDEvent);
+}

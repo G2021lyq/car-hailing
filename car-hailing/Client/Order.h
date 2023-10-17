@@ -8,6 +8,8 @@ public:
 	Order(const CString& passenger, double* start, double* end);
 	Order(const CString& driver, const CString& passenger, double* start, double* end);
 
+	double* GetStart();
+	double* GetEnd();
 
 	CString GetDriver() const;
 	CString GetPassenger() const;
@@ -33,9 +35,9 @@ private:
 	double m_billAmount;
 	CString m_estimatedTime;
 	bool m_isCancelled;
-	//(0,21) (0,11)
-	double m_start[2];
-	double m_end[2];
+	//(0,20) (0,15)
+	double* m_start;
+	double* m_end;
 
 	double CalculateBillAmount();
 	CString CalculateEstimatedTime();

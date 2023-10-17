@@ -235,9 +235,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\bg .bmp" />
+    <Image Include="res\car.bmp" />
     <Image Include="res\Client.ico" />
     <Image Include="res\ClientDoc.ico" />
     <Image Include="res\Papper.ico" />
+    <Image Include="res\passenger.bmp" />
     <Image Include="res\RClient.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

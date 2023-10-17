@@ -228,9 +228,9 @@
     <ResourceCompile Include="Client.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="res\Client.rc2">
+    <None Include="res\Client.rc2">
       <FileType>RC</FileType>
-    </ResourceCompile>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Client.ico" />

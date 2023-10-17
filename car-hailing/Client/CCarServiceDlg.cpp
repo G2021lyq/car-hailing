@@ -64,8 +64,8 @@ void CCarServiceDlg::OnBnClickedButton2()
 	Driver driver(count);
 
 	//生成一个Order类
-	double point_1[2] = { 1.345,2.567 };
-	double point_2[2] = { 21.567,10.786 };
+	double point_1[2] = { 3.0,4.0 };
+	double point_2[2] = { 20.0,9.0 };
 	Order aOrder(driver.ToString(), L"passenger", point_1, point_2);
 
 	CString myString = aOrder.ToCString();

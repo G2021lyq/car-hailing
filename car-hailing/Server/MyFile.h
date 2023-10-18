@@ -1,24 +1,36 @@
 ﻿#pragma once
 
-#include "afx.h"
+#include <afx.h>
+#include <vector>
+#include <cstring>
+#include <iostream>
+#include <fstream>
+#include <string>
+
 
 class MyFile
 {
 private:
+	CString AccountFilePath = L"./Accounts.txt";
+	CString HistoryFilePath = L"History.txt";
 	CString filePath;
-	CStdioFile file;
+	std::ifstream i_file;//处理Ansi的
+	CStdioFile w_file;//处理Unicode的
 
-	void SetFilePath(CString f_path);
-
-	bool OpenFile();
-	bool OpenFile(CString f_path);
-
-	void WriteString(CString textToAppend);
-
-	void CloseFile();
+	//设置文件路径的
+	void SetFilePath(CString& f_path);
+	void WriteString(CString& text);
+	CString ReadString();
+	void OpenWriteFile();
+	void ClosWriteFile();
 
 public:
-	void My_Try();
+	void AccountSetFilePath();
+	void HistorySetFilePath(CString& userName);
+	void OpenReadFile();
+	void CloseReadFile();
+	void WriteAccount(CString& text);
+	CString ReadAccount();
 
 };
 

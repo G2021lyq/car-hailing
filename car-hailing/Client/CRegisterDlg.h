@@ -11,7 +11,7 @@ public:
 	CRegisterDlg(CWnd* pParent = nullptr);   // 标准构造函数
 	virtual ~CRegisterDlg();
 
-// 对话框数据
+	// 对话框数据
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_DIALOG_Register };
 #endif
@@ -27,4 +27,14 @@ public:
 	CString m_Password;
 	afx_msg void OnEnChangeEdit3();
 	afx_msg void OnBnClickedButton2();
+	afx_msg void OnBnClickedButton3();
+	afx_msg void OnBnClickedButton4();
+	// //邮箱验证码的文字
+	CButton EmailStaticCode;
+
+	//
+	CString Code;
+
+	// 邮箱验证码
+	CString EmailCode;
 };

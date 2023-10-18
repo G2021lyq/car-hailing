@@ -14,10 +14,9 @@ private:
 	CString password;
 	CString bio;//个人简介
 
+public:
 	// 检验邮箱是否合法的函数
 	bool IsEmailValid(const CString& email);
-
-public:
 	// 构造函数
 	Account();
 	Account(const CString& email, const CString& username, const CString& avatar, const CString& password, const CString& bio);

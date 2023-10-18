@@ -183,6 +183,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	//TODO::
 
 	//在创建主窗口前，先弹出登录窗口，必须登录成功，才能进入主窗口
+	//先填写服务器地址，默认地址是127.0.0.1
 tryagain:
 	//创建登录窗口，并以阻塞方式创建
 	CLoginDlg cLoginDlg;
@@ -192,21 +193,31 @@ tryagain:
 		return TRUE;
 	}
 	if (cLoginDlg.type == 1) {//实现注册逻辑
+	registragin:
 		CRegisterDlg cRegisterDlg;
-		if (cRegisterDlg.DoModal() != IDOK) {//没有按确认建
-							   //退出程序
+		int flag = cRegisterDlg.DoModal();
+		if (flag != IDOK) {//没有按确认建
+			if (flag == IDCANCEL)
+				goto tryagain;
 			PostQuitMessage(0);
 			return TRUE;
 		}
 		//输入信息校验
+		if (!(cRegisterDlg.Code == cRegisterDlg.EmailCode)) {
+			MessageBox(TEXT("邮箱验证码不正确"));
+			goto registragin;
+		}
 		if (cRegisterDlg.m_Email.IsEmpty()) {
 			MessageBox(TEXT("请填写对应的邮箱"));
-			goto tryagain;
+			goto registragin;
 		}
 		if (cRegisterDlg.m_Password.IsEmpty()) {
 			MessageBox(TEXT("请填写对应的密码"));
-			goto tryagain;
+			goto registragin;
 		}
+		//到了现在，就是填好了信息了
+		//应该去发送一条协议信息，并等待响应
+		MessageBox(L"恭喜您！！注册成功！！");
 		goto tryagain;
 	}
 	//输入信息校验

@@ -238,7 +238,54 @@ void CServerDlg::ParserPkt(MySocket* from)
 		wsprintf(ShowBuff, L" %s发送了:%s\r\n 发送给%s:%s\r\n",
 			from->m_Player, SendBuff, from->m_Player, newMessage);
 	}
+	else if (SendBuff[0] == 0x07) //申请注册的方式
+	{
+		wsprintf(SendBuff, L"%s", SendBuff + 1);
+		CString pkt = SendBuff;
+		CString m_Email;
+		CString m_Password;
+		int commaPos = pkt.Find(_T(','));
+		m_Email = pkt.Left(commaPos);
+		m_Password = pkt.Mid(commaPos + 1);
 
+		Account newAccount;
+		newAccount.setUsername(L"无名之辈");
+		newAccount.setEmail(m_Email);
+		newAccount.setPassword(m_Password);
+		newAccount.setBio(L"这个人很懒，还没有简介");
+		newAccount.setAvatar(L"NULL");
+
+		wchar_t newMessage[2048];
+		wmemset(newMessage, 0, 2048);
+		newMessage[0] = 0x07; //协议信息
+
+		m_file.SetFilePathAccount(m_file.GetFilePathAccount(), m_file.GetPathAccount());
+		m_file.OpenFile();
+		if (m_file.is_StringExistInFile(m_Email) != -1)
+		{
+			//找到了相同的邮箱
+			wsprintf(newMessage + 1, L"no");
+			wsprintf(ShowBuff, L" %s尝试注册:失败%s，该邮箱已经存在\r\n",
+				from->m_Player, from->m_Player);
+
+		}
+		else {
+			//写一条信息
+			m_file.WriteLine(newAccount.ToCString());
+
+			wsprintf(newMessage + 1, L"yes");
+			wsprintf(ShowBuff, L" %s尝试注册:成功\r\n",
+				from->m_Player);
+		}
+
+		m_file.CloseFile();
+
+		//发送消息
+		if (from->Send(newMessage, 2048) == SOCKET_ERROR) {
+			//每次写Send都应该进行错误处理
+			MessageBox(L"服务器发送反馈信息失败！！");
+		}
+	}
 	// 无论怎样都将信息传给edit里面
 	Append(ShowBuff);
 }

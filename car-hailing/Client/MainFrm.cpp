@@ -157,6 +157,7 @@ void CMainFrame::ParserPkt(MySocket* m_server) {
 		//MessageBox(pkt + 1);
 		break;
 	case 0x10:
+	{
 		wsprintf(GetBuff, L"%s", pkt + 1);
 
 		//发送一个自定义消息，从而告诉CUserDlg去执行相应的业务
@@ -165,6 +166,17 @@ void CMainFrame::ParserPkt(MySocket* m_server) {
 		// 发送自定义消息给 CUserDlg
 		pUserDlg->PostMessage(NM_TEST_SOCKET, (WPARAM)NM_TEST_SOCKET, reinterpret_cast<LPARAM>(GetBuff));
 		break;
+	}
+	case 0x07:
+	{
+		wsprintf(GetBuff, L"%s", pkt + 1);
+		if (wcscmp(GetBuff, L"yes") == 0) {
+			MessageBox(L"注册成功！！！");
+		}
+		else {
+			MessageBox(L"邮箱已经被注册！！！");
+		}
+	}
 	}
 }
 
@@ -217,7 +229,44 @@ tryagain:
 		}
 		//到了现在，就是填好了信息了
 		//应该去发送一条协议信息，并等待响应
-		MessageBox(L"恭喜您！！注册成功！！");
+			//填写了信息，尝试与服务器连接
+		CString msg;
+		DWORD err;
+		//把SOCKET与对话框联系起来，SOCKET有消息就会通知本对话
+		m_socket.AttachCWnd(this);
+		//自动完成SOCKET的初始化、设置
+		if (m_socket.Create() == FALSE)
+		{
+			err = GetLastError();
+			msg.Format(_T("创建Socket失败!\r\n错误代码:%d"), err);
+			//输出错误信息并结束
+			MessageBox(msg);
+			PostQuitMessage(0);           //退出
+			return TRUE;
+		}
+		//连接到服务器计算机，端口为0x8123的程序
+		if (m_socket.Connect(cLoginDlg.m_ipAddr, 0x8123) == FALSE)
+		{
+			//如果连接成功，对方创建新的SOCKET，新的端口号，就与新的SOCKET，新的端口号通信。
+			err = GetLastError();
+			msg.Format(_T("连接服务器失败! \r\n错误代码:%d"), err);
+			//输出错误信息并结束
+			MessageBox(msg);
+			PostQuitMessage(0);           //退出
+			return TRUE;
+		}
+		//连接成功，发送一条协议信息
+		wchar_t pkt[200];
+		pkt[0] = 0x07; // 默认pkt[0]为协议信息
+		// 定义0x11为登录所发送的信息,并补充具体传递的信息
+		wsprintf(pkt + 1, L"%s,%s", cRegisterDlg.m_Email, cRegisterDlg.m_Password);
+		// 发送
+		if (m_socket.Send(pkt, 200) == FALSE)
+		{
+			MessageBox(_T("发送数据错误!"));
+		}
+
+		m_socket.Close();
 		goto tryagain;
 	}
 	//输入信息校验
@@ -226,14 +275,13 @@ tryagain:
 		goto tryagain;
 	}
 	if (cLoginDlg.m_username.IsEmpty()) {
-		MessageBox(TEXT("请填写用户名"));
+		MessageBox(TEXT("请填写邮箱"));
 		goto tryagain;
 	}
 
 	//填写了信息，尝试与服务器连接
 	CString msg;
 	DWORD err;
-
 	//把SOCKET与对话框联系起来，SOCKET有消息就会通知本对话
 	m_socket.AttachCWnd(this);
 	//自动完成SOCKET的初始化、设置
@@ -267,7 +315,6 @@ tryagain:
 	// 定义0x11为登录所发送的信息,并补充具体传递的信息
 	wsprintf(pkt + 1, cLoginDlg.m_username);
 	// 发送
-	int l = wcslen(pkt) + 1;
 	if (m_socket.Send(pkt, 200) == FALSE)
 	{
 		MessageBox(_T("发送数据错误!"));

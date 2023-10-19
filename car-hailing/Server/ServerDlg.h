@@ -6,6 +6,7 @@
 
 #include "Driver.h"
 #include "MySocket.h"
+#include "MyFile.h"
 #include <vector>
 
 // CServerDlg 对话框
@@ -51,7 +52,8 @@ public:
 	CBitmapButton m_startBtn;
 
 	CCriticalSection m_csList;
-
+	//文件类
+	MyFile m_file;
 	MySocket m_socket;
 	//自定义SOCKET的消息解析方法
 	afx_msg LRESULT OnSocket(WPARAM wParam, LPARAM lParam);

@@ -40,4 +40,6 @@ public:
 	afx_msg void OnEnChangeEdit2();
 	afx_msg void OnBnClickedButton5();
 	virtual BOOL OnInitDialog();
+	// 登录用的密码
+	CString m_password;
 };

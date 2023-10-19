@@ -61,7 +61,6 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 	CCreateContext Context;
 	CFormView* pNewView = nullptr; // 在外部定义变量
 
-	Account a(L"1@qq.com", L"username", L"avatar", L"123", L"这个人很懒什么是都没写");
 
 	CStringW receivedString;
 	wchar_t Buff[2048];
@@ -70,7 +69,7 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 	{
 	case(NM_A):
 	{
-		receivedString = a.ToCString();
+		receivedString = m_Account.ToCString();
 		wsprintf(Buff, L"%s", receivedString);
 
 		Context.m_pNewViewClass = RUNTIME_CLASS(CUserDlg);
@@ -153,13 +152,27 @@ void CMainFrame::ParserPkt(MySocket* m_server) {
 	//判断协议
 	switch (pkt[0])
 	{
-	case 0x00://0x00是一个测试的信息
-		//MessageBox(pkt + 1);
+	case 0x11:
+	{
+		wsprintf(GetBuff, L"%s", pkt + 1);
+		if (wcscmp(GetBuff, L"password") == 0) {
+			MessageBox(L"密码错误！！！");
+			login_No = true;
+		}
+		else if (wcscmp(GetBuff, L"email") == 0) {
+			MessageBox(L"邮箱没有被注册！！！");
+			login_No = true;
+		}
+		else {
+			login_flag = true;
+			m_Account = GetBuff;
+		}
+		PostMessage(NM_Login, 0, 0);
 		break;
+	}
 	case 0x10:
 	{
 		wsprintf(GetBuff, L"%s", pkt + 1);
-
 		//发送一个自定义消息，从而告诉CUserDlg去执行相应的业务
 		// 获取指向 CUserDlg 的指针
 		CUserDlg* pUserDlg = dynamic_cast<CUserDlg*>(m_spliter.GetPane(0, 1));
@@ -197,6 +210,9 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	//在创建主窗口前，先弹出登录窗口，必须登录成功，才能进入主窗口
 	//先填写服务器地址，默认地址是127.0.0.1
 tryagain:
+	login_flag = false;
+	login_No = false;
+
 	//创建登录窗口，并以阻塞方式创建
 	CLoginDlg cLoginDlg;
 	if (cLoginDlg.DoModal() != IDOK) {//没有按确认建
@@ -278,6 +294,12 @@ tryagain:
 		MessageBox(TEXT("请填写邮箱"));
 		goto tryagain;
 	}
+	Account a;
+	if (a.IsEmailValid(cLoginDlg.m_username) == FALSE)
+	{
+		MessageBox(TEXT("邮箱格式不正确"));
+		goto tryagain;
+	}
 
 	//填写了信息，尝试与服务器连接
 	CString msg;
@@ -307,17 +329,34 @@ tryagain:
 	}
 
 	Sleep(1000);
+
 	// 代码运行到这里，就说明已经和服务器连接上了，现在向服务器发送一条协议信息，“XXX已经登录”
 	// 构造协议信息
 	// 登入聊天室,给服务器发送用户登录信息
 	wchar_t pkt[200];
 	pkt[0] = 0x11; // 默认pkt[0]为协议信息
 	// 定义0x11为登录所发送的信息,并补充具体传递的信息
-	wsprintf(pkt + 1, cLoginDlg.m_username);
+	wsprintf(pkt + 1, L"%s,%s", cLoginDlg.m_username, cLoginDlg.m_password);
 	// 发送
 	if (m_socket.Send(pkt, 200) == FALSE)
 	{
 		MessageBox(_T("发送数据错误!"));
+	}
+
+
+	// 在消息循环中等待接收消息
+	MSG m_msg;
+	while (::GetMessage(&m_msg, NULL, 0, 0)) {
+		if (m_msg.message == NM_Login) {
+			if (login_No == true)
+				goto tryagain;
+			else if (login_flag == true)
+				break;
+			// 处理自定义消息
+			// 在这里执行你希望在接收消息后执行的代码
+		}
+		::TranslateMessage(&m_msg);
+		::DispatchMessage(&m_msg);
 	}
 
 	//设置标题

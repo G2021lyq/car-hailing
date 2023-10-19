@@ -22,8 +22,10 @@
 #define NM_START_ACCOUNT (WM_USER+2028)
 #define NM_START_ORDER (WM_USER+2029)
 
+#define NM_Login (WM_USER + 2030)
 
 #include "MySocket.h"
+#include "Account.h"
 
 class CMainFrame : public CFrameWnd
 {
@@ -55,6 +57,7 @@ public:
 protected:  // 控件条嵌入成员
 	CStatusBar        m_wndStatusBar;
 	//切分窗口对象
+	Account m_Account;
 private:
 	CSplitterWnd m_spliter;
 	//自定义消息处理函数
@@ -62,6 +65,8 @@ private:
 	afx_msg LRESULT OnMyChange(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnSocket(WPARAM wParam, LPARAM lParam);//Socket的消息响应
 	// 生成的消息映射函数
+	bool login_flag = false;
+	bool login_No = true;
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	DECLARE_MESSAGE_MAP()

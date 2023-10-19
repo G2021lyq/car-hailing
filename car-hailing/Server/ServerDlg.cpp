@@ -184,32 +184,70 @@ void CServerDlg::ParserPkt(MySocket* from)
 		// 与该套接字链接的对方的IP地址、端口号
 		from->GetPeerName(ipaddr, port);
 		// 与SOCKET通信的用户的称谓
-		from->m_Player = SendBuff + 1; // 名称的记录会在为空时停止
+		wsprintf(SendBuff, L"%s", SendBuff + 1);
+		CString pkt = SendBuff;
+		CString m_Email;
+		CString m_Password;
+		int commaPos = pkt.Find(_T(','));
+		m_Email = pkt.Left(commaPos);
+		m_Password = pkt.Mid(commaPos + 1);
+		from->m_Player = m_Email;
 
-		//MessageBox(from->m_Player);
+		//设置返回信息，设置协议
+		wchar_t newMessage[2048];
+		wmemset(newMessage, 0, 2048);
+		newMessage[0] = 0x11;
+		//打开文件
+		m_file.SetFilePathAccount(m_file.GetFilePathAccount(), m_file.GetPathAccount());
+		m_file.OpenFile();
+		int Number = m_file.is_StringExistInFile(m_Email);
+		if (Number != -1)
+		{
+			//有记录，可以登录
+			Account loginAccount;
+			loginAccount = m_file.GetStringByNumber(Number);
+			if (loginAccount.getPassword() == m_Password)
+			{
+				//脏化密码
+				loginAccount.setPassword(L"******");
+				//密码正确，可以登录
+				wsprintf(newMessage + 1, L"%s", loginAccount.ToCString());
+				// 填写ShowBuff信息
+				wsprintf(ShowBuff, L" %s 登录成功\r\n", static_cast<const wchar_t*>(from->m_Player));
 
-		// 向列表中插入一项，使用了锁的知识
-		m_csList.Lock();
-		// 插入到列表中（该列表存储所有的Socket），返回插入的行号
-		item = m_list.InsertItem(0, (LPCTSTR)(SendBuff + 1));
-		// 保存该SOCKET指针到该行的附加数据域
-		m_list.SetItemData(item, (DWORD)from);
-		// 设置第2列，IP地址列
-		m_list.SetItemText(item, 1, ipaddr);
-		m_csList.Unlock();
-
-		// s1中保存新加入用户的socket
-		s1 = (MySocket*)m_list.GetItemData(item);
-
-		// 填写ShowBuff信息
-		wsprintf(ShowBuff, L" %s 连接成功\r\n", static_cast<const wchar_t*>(from->m_Player));
+				// 向列表中插入一项，使用了锁的知识
+				m_csList.Lock();
+				// 插入到列表中（该列表存储所有的Socket），返回插入的行号
+				item = m_list.InsertItem(0, (LPCTSTR)m_Email);
+				// 保存该SOCKET指针到该行的附加数据域
+				m_list.SetItemData(item, (DWORD)from);
+				// 设置第2列，IP地址列
+				m_list.SetItemText(item, 1, ipaddr);
+				m_csList.Unlock();
+				// s1中保存新加入用户的socket
+				s1 = (MySocket*)m_list.GetItemData(item);
+			}
+			else {
+				//不能登录
+				wsprintf(newMessage + 1, L"password");
+				// 填写ShowBuff信息
+				wsprintf(ShowBuff, L" %s 登录失败,原因：密码错误\r\n", static_cast<const wchar_t*>(from->m_Player));
+			}
+		}
+		else {
+			//不能登录
+			wsprintf(newMessage + 1, L"email");
+			// 填写ShowBuff信息
+			wsprintf(ShowBuff, L" %s 登录失败,原因：邮箱未注册\r\n", static_cast<const wchar_t*>(from->m_Player));
+		}
+		m_file.CloseFile();
 
 		//发送反馈信息
-		//from->Send(L"你好吗？", 100);
+		if (from->Send(newMessage, 2048) == SOCKET_ERROR) {
+			//每次写Send都应该进行错误处理
+			MessageBox(L"服务器发送反馈信息失败！！");
+		}
 
-		SendBuff[0] = 0x00;//0x00是协议类型，表示一个测试信息
-		wsprintf(SendBuff + 1, L"服务器收到了信息");
-		from->Send(SendBuff, 2048);
 	}
 	else if (SendBuff[0] == 0x10)
 	{
@@ -247,6 +285,7 @@ void CServerDlg::ParserPkt(MySocket* from)
 		int commaPos = pkt.Find(_T(','));
 		m_Email = pkt.Left(commaPos);
 		m_Password = pkt.Mid(commaPos + 1);
+		from->m_Player = m_Email;
 
 		Account newAccount;
 		newAccount.setUsername(L"无名之辈");
@@ -265,7 +304,7 @@ void CServerDlg::ParserPkt(MySocket* from)
 		{
 			//找到了相同的邮箱
 			wsprintf(newMessage + 1, L"no");
-			wsprintf(ShowBuff, L" %s尝试注册:失败%s，该邮箱已经存在\r\n",
+			wsprintf(ShowBuff, L" %s尝试注册:失败.%s，该邮箱已经存在\r\n",
 				from->m_Player, from->m_Player);
 
 		}

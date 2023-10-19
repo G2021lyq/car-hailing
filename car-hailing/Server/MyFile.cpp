@@ -1,95 +1,167 @@
 ﻿#include "pch.h"
 #include "MyFile.h"
 
-void MyFile::SetFilePath(CString& f_path)
+std::wstring& MyFile::GetFilePathAccount()
 {
-	filePath = f_path;
+	return AccountFilePath;
+	// TODO: 在此处插入 return 语句
 }
 
-void MyFile::WriteString(CString& text)
+CString& MyFile::GetPathAccount()
 {
-	// 打开文件以进行追加写入操作，使用ANSI编码方式
-	// 将文件指针移到文件的末尾
-	w_file.SeekToEnd();
+	return AccountPath;
+	// TODO: 在此处插入 return 语句
+}
 
-	// 如果原文件不为空，写入一个换行符以保持原有格式
-	if (w_file.GetPosition() > 0) {
-		w_file.WriteString(_T("\n"));
+void MyFile::SetFilePathAccount(std::wstring FilePath, CString _Path)
+{
+	this->Path = _Path;
+
+	// 使用CreateDirectory函数创建目录
+	std::wstring filePath = FilePath;
+	if (CreateDirectory(filePath.c_str(), NULL) || GetLastError() == ERROR_ALREADY_EXISTS) {
+		//创建成功
 	}
-
-	// 将CString字符串转换为ANSI编码
-	int textLength = text.GetLength();
-	int bufferSize = WideCharToMultiByte(CP_ACP, 0, text, textLength, NULL, 0, NULL, NULL);
-	char* ansiBuffer = new char[bufferSize];
-	WideCharToMultiByte(CP_ACP, 0, text, textLength, ansiBuffer, bufferSize, NULL, NULL);
-
-	// 将ANSI字符串写入文件
-	w_file.Write(ansiBuffer, bufferSize);
-
-	// 释放分配的内存
-	delete[] ansiBuffer;
+	else {
+		//创建失败
+	}
 }
 
-CString MyFile::ReadString()
+void MyFile::OpenFile()
+{
+	//打开读文件
+	i_file.open(this->Path);
+	//打开写文件
+}
+
+void MyFile::CloseFile()
+{
+	i_file.close();
+}
+
+void MyFile::ReStartFile()
+{
+	CloseFile();
+	OpenFile();
+}
+
+CString MyFile::ReadLine()
 {
 	std::string line;
 	if (std::getline(i_file, line)) {
 		int len = MultiByteToWideChar(CP_ACP, 0, line.c_str(), -1, nullptr, 0);
 		if (len == 0) {
+			//返回空串
 			return L"";
 		}
 
-		CStringW cstr;
+		CString cstr;
 		cstr.GetBuffer(len);
 		MultiByteToWideChar(CP_ACP, 0, line.c_str(), -1, cstr.GetBuffer(), len);
 
+		std::wstring a = cstr.GetString();
+		cstr = a.c_str();
 		return CString(cstr);
 	}
+
+	//如果读到末尾，返回空串
 	return L"";
 
 }
 
-void MyFile::OpenWriteFile()
+void MyFile::WriteLine(CString& unicodeString)
 {
-	w_file.Open(filePath, CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite | CFile::typeText);
+	CloseFile();
+	w_file.open(CT2A(this->Path), std::ios::app);
+
+	std::wstring a = unicodeString.GetString();
+	unicodeString = a.c_str();
+	// 将Unicode字符串转换为Ansi编码的Ansi字符串
+	int length = unicodeString.GetLength();
+	int requiredLength = WideCharToMultiByte(CP_ACP, 0, unicodeString, length, NULL, 0, NULL, NULL);
+	if (requiredLength > 0) {
+		char* ansiBuffer = new char[requiredLength];
+		if (WideCharToMultiByte(CP_ACP, 0, unicodeString, length, ansiBuffer, requiredLength, NULL, NULL) > 0) {
+			// 写入Ansi字符串到文件
+			w_file.write(ansiBuffer, requiredLength);
+			w_file << std::endl;
+		}
+		delete[] ansiBuffer;
+	}
+	w_file.close();
+	OpenFile();
 }
 
-void MyFile::ClosWriteFile()
+int MyFile::is_StringExistInFile(CString& searchString)
 {
-	w_file.Close();
+	CString Line;
+	for (int i = 0;; i++)
+	{
+		Line = ReadLine();//读取一行数据
+		if (Line == L"") {
+			ReStartFile();
+			return -1; //返回错误值
+		}
+		if (Line.Find(searchString) != -1)
+		{
+			ReStartFile();
+			return i;//返回行号
+		}
+	}
+
 }
 
-void MyFile::AccountSetFilePath()
+CString MyFile::GetStringByNumber(int Number)
 {
-	SetFilePath(AccountFilePath);
+	CString m_String;
+	for (int i = 0; i <= Number; i++)
+	{
+		m_String = ReadLine();
+	}
+	ReStartFile();
+	return m_String;
 }
 
-void MyFile::HistorySetFilePath(CString& userName)
+void MyFile::DeleteStringByNumber(int Number)
 {
-	CString m_path;
-	m_path.Format(L".//%s//%s", userName, HistoryFilePath);
-	SetFilePath(m_path);
+	CString Line;
+	std::vector<CString> Lines;
+	for (int i = 0;; i++)
+	{
+		Line = ReadLine();
+		if (Line == "") break;
+		if (i == Number) continue;
+		Lines.push_back(Line);
+	}
+	ReStartFile();
+	w_file.open(Path, std::ios::trunc);
+	w_file.close();
+	for (CString m_item : Lines) {
+		WriteLine(m_item);
+	}
+	ReStartFile();
+
 }
 
-void MyFile::OpenReadFile()
+void MyFile::ReplaceLineByNumber(int Number, CString& ReplcaString)
 {
-	i_file.open(filePath);
+	CString Line;
+	std::vector<CString> Lines;
+	for (int i = 0;; i++)
+	{
+		Line = ReadLine();
+		if (Line == "") break;
+		if (i == Number) Line = ReplcaString;
+		Lines.push_back(Line);
+	}
+	ReStartFile();
+	w_file.open(Path, std::ios::trunc);
+	w_file.close();
+	for (CString m_item : Lines) {
+		WriteLine(m_item);
+	}
+	ReStartFile();
+
 }
 
-void MyFile::CloseReadFile()
-{
-	i_file.close();
-}
-
-void MyFile::WriteAccount(CString& text)
-{
-	AccountSetFilePath();
-	OpenWriteFile();
-	WriteString(text);
-}
-
-CString MyFile::ReadAccount()
-{
-	return ReadString();
-}
 

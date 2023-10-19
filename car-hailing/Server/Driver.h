@@ -53,4 +53,5 @@ private:
 	int generateRandomCarModel();
 
 	int generateRandomCoordinate(int min, int max);
+
 };

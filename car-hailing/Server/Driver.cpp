@@ -104,7 +104,7 @@ int Driver::generateRandomCoordinate(int min, int max) {
 
 CString Driver::ToString() {
 	CString str;
-	str.Format(_T("Driver ID: %d, Car Model: %d, Current Position: (%d, %d), Pick Up Area: (%d, %d) - (%d, %d)"),
+	str.Format(_T("Driver ID: %d\r\n Car Model: %d\r\n Current Position: (%d, %d)\r\n Pick Up Area: (%d, %d) - (%d, %d)"),
 		id, carModel, currentPositionX, currentPositionY,
 		pickUpAreaLeftTopX, pickUpAreaLeftTopY, pickUpAreaRightBottomX, pickUpAreaRightBottomY);
 	return str;
@@ -128,32 +128,5 @@ Driver& Driver::operator=(const CString& str) {
 	*this = FromCString(str);
 	return *this;
 }
-
-
-/*
-	int main() {
-		// 创建存储司机对象的向量
-		std::vector<Driver> drivers;
-
-		// 生成10个司机对象并添加到向量中
-		for (int i = 0; i < 10; ++i) {
-			Driver driver;
-			drivers.push_back(driver);
-		}
-
-		// 遍历司机对象向量并访问属性
-		for (Driver& driver : drivers) {
-			std::cout << "Driver ID: " << driver.getId() << std::endl;
-			std::cout << "Car Model: " << driver.getCarModel() << std::endl;
-			std::cout << "Current Position: (" << driver.getCurrentPositionX() << ", " << driver.getCurrentPositionY() << ")" << std::endl;
-			std::cout << "Pick-up Area: (" << driver.getPickUpAreaLeftTopX() << ", " << driver.getPickUpAreaLeftTopY() << ") - (" << driver.getPickUpAreaRightBottomX() << ", " << driver.getPickUpAreaRightBottomY() << ")" << std::endl;
-			std::cout << "-----------------------------------" << std::endl;
-		}
-		//Driver driver1;
-		//Driver driver2;
-
-		return 0;
-	}
-*/
 
 

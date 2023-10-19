@@ -31,6 +31,8 @@ public:
 	afx_msg void OnBnClickedButton2();
 	//自定义消息处理函数
 	afx_msg LRESULT OnMyChange(WPARAM wParam, LPARAM lParam);
+	//时间总数
+	int TimerSum;
 
 	CButton m_cartype1;
 	CButton m_cartype2;
@@ -61,6 +63,8 @@ public:
 	CProgressCtrl m_progressbar;
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	CEdit m_showtime;
+	// 展示框的内含物
+	CString m_valmessage;
 };
 
 //写一个结构体用来传递信息

@@ -21,6 +21,7 @@ CCarServiceDlg::CCarServiceDlg()
 	, m_valstartposy(_T(""))
 	, m_valendposx(_T(""))
 	, m_valendposy(_T(""))
+	, m_valmessage(_T(""))
 {
 
 }
@@ -49,6 +50,7 @@ void CCarServiceDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STARTMATCH, m_startmatch);
 	DDX_Control(pDX, IDC_PROGRESS1, m_progressbar);
 	DDX_Control(pDX, IDC_SHOWTIME, m_showtime);
+	DDX_Text(pDX, IDC_EDIT1, m_valmessage);
 }
 
 BEGIN_MESSAGE_MAP(CCarServiceDlg, CFormView)
@@ -91,8 +93,6 @@ void CCarServiceDlg::Dump(CDumpContext& dc) const
 
 void CCarServiceDlg::OnBnClickedButton2()
 {
-
-
 	// 找到司机成功，向主窗口，发送NM_OK消息，参数如下
 
 	//生成driver类
@@ -120,7 +120,12 @@ LRESULT CCarServiceDlg::OnMyChange(WPARAM wParam, LPARAM lParam)
 {
 	switch (wParam)
 	{
-
+	case NM_SHOW_EDIT:
+		//MessageBox(_T("好好好"));
+		wchar_t* myString = reinterpret_cast<wchar_t*>(lParam);
+		m_valmessage += myString;
+		m_valmessage.Append(_T("\r\n"));
+		UpdateData(FALSE);
 
 	}
 	return 0;
@@ -238,19 +243,14 @@ void CCarServiceDlg::OnEnChangeEndposy()
 void CCarServiceDlg::OnBnClickedStartmatch()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	
+
 	//点击开始匹配，将相关信息上传服务器
 	//先把相关信息弹出消息框提示再说
-
-
-	/*str.Format(_T("Driver ID: %d, Car Model: %d, Current Position: (%d, %d), Pick Up Area: (%d, %d) - (%d, %d)"),
-		id, carModel, currentPositionX, currentPositionY,
-		pickUpAreaLeftTopX, pickUpAreaLeftTopY, pickUpAreaRightBottomX, pickUpAreaRightBottomY);*/
 
 	CString cstr;
 	cstr.Format(_T("出发点坐标：（%s,%s）终点坐标：（%s,%s）车的种类：%s 发车时间：%s"), myclient.StartX, myclient.StartY, myclient.EndX, myclient.EndY, myclient.CarType, myclient.TimerType);
 	AfxMessageBox(cstr);
-	
+
 
 	//当我们点击这个按钮时
 	// 我们要求立刻叫车
@@ -258,12 +258,13 @@ void CCarServiceDlg::OnBnClickedStartmatch()
 		//进度条君你退下
 	}
 	//我们要求等待30秒再叫车，此时进度条显现并开始移动
-	else if(myclient.TimerType == _T("20")) {
+	else if (myclient.TimerType == _T("20")) {
 		m_progressbar.ShowWindow(SW_SHOW);
 		m_showtime.ShowWindow(SW_SHOW);
 		//进度条初始化
 		//范围
 		m_progressbar.SetRange(0, 30);
+		TimerSum = 30;
 		//设置当前位置
 		m_progressbar.SetPos(0);
 		//设置进度条每步前进的长度
@@ -276,12 +277,13 @@ void CCarServiceDlg::OnBnClickedStartmatch()
 	//这里我并没有写显示时间数据的逻辑（）
 	else {
 		m_progressbar.ShowWindow(SW_SHOW);
-		//m_showtime.ShowWindow(SW_SHOW);
-		m_progressbar.SetRange(0, 30);
+		m_showtime.ShowWindow(SW_SHOW);
+		m_progressbar.SetRange(0, 10 * 60);
+		TimerSum = 10 * 60;
 		//设置当前位置
 		m_progressbar.SetPos(0);
 		//设置进度条每步前进的长度
-		m_progressbar.SetStep(0.05);
+		m_progressbar.SetStep(1);
 		//打开计时器，此计时器ID为1，一秒跑一次
 		SetTimer(1, 1000, NULL);
 	}
@@ -291,28 +293,28 @@ void CCarServiceDlg::OnBnClickedStartmatch()
 void CCarServiceDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	if (m_progressbar.GetPos() == 30) {
+	if (TimerSum == 0) {
 		//计时器时间已满，关闭定时器
 		KillTimer(1);
 		//等待时间已满需要发送一个消息
 
-
+		MessageBox(L"123");
 
 
 	}
 	else {
+		TimerSum--;
 		//没满就跑
 		m_progressbar.StepIt();
 		//设定字符串显示
 		CString cstr, cstr2;
-		cstr.Format(_T("00:%d"), 30 - m_progressbar.GetPos());
-		cstr2.Format(_T("00:0%d"), 30 - m_progressbar.GetPos());
-
-		if (m_progressbar.GetPos() < 21) {
+		if (TimerSum < 60) {
+			cstr.Format(_T("00:%d"), TimerSum);
 			SetDlgItemText(IDC_SHOWTIME, cstr);
 		}
 		else {
-			SetDlgItemText(IDC_SHOWTIME, cstr2);
+			cstr.Format(_T("%d:%d"), TimerSum / 60, TimerSum % 60);
+			SetDlgItemText(IDC_SHOWTIME, cstr);
 		}
 	}
 

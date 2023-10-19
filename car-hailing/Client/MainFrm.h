@@ -24,6 +24,9 @@
 
 #define NM_Login (WM_USER + 2030)
 
+#define NM_SHOW_EDIT (WM_USER+3000)
+
+
 #include "MySocket.h"
 #include "Account.h"
 

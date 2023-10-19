@@ -104,7 +104,7 @@ int Driver::generateRandomCoordinate(int min, int max) {
 
 CString Driver::ToString() {
 	CString str;
-	str.Format(_T("Driver ID: %d\r\n Car Model: %d\r\n Current Position: (%d, %d)\r\n Pick Up Area: (%d, %d) - (%d, %d)"),
+	str.Format(_T("Driver ID: %d, Car Model: %d, Current Position: (%d, %d), Pick Up Area: (%d, %d) - (%d, %d)"),
 		id, carModel, currentPositionX, currentPositionY,
 		pickUpAreaLeftTopX, pickUpAreaLeftTopY, pickUpAreaRightBottomX, pickUpAreaRightBottomY);
 	return str;

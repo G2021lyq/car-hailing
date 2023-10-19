@@ -325,6 +325,24 @@ void CServerDlg::ParserPkt(MySocket* from)
 			MessageBox(L"服务器发送反馈信息失败！！");
 		}
 	}
+	else if (SendBuff[0] == 0xA0) {
+		wsprintf(SendBuff, L"%s", SendBuff + 1);
+		Order newOrder;
+		newOrder = SendBuff;
+
+		//回消息，客户端显示
+		wchar_t newMessage[2048];
+		wmemset(newMessage, 0, 2048);
+		newMessage[0] = 0xA1;//该协议用于显示于用户的显示屏上
+		wsprintf(newMessage + 1, L"匹配中...");
+
+		if (from->Send(newMessage, 2048) == SOCKET_ERROR) {
+			MessageBox(_T("服务器发送消息失败！"));
+		}
+
+
+
+	}
 	// 无论怎样都将信息传给edit里面
 	Append(ShowBuff);
 }

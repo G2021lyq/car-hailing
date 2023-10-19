@@ -33,6 +33,8 @@ public:
 	afx_msg LRESULT OnMyChange(WPARAM wParam, LPARAM lParam);
 	//时间总数
 	int TimerSum;
+	//订单字符串
+	CString m_OrderStr;
 
 	CButton m_cartype1;
 	CButton m_cartype2;
@@ -64,7 +66,7 @@ public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	CEdit m_showtime;
 	// 展示框的内含物
-	CString m_valmessage;
+	CString m_valmessage = L"";
 };
 
 //写一个结构体用来传递信息

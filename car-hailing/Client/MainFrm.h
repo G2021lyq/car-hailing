@@ -26,6 +26,8 @@
 
 #define NM_SHOW_EDIT (WM_USER+3000)
 
+#define NM_TimerOver (WM_USER+3001)
+
 
 #include "MySocket.h"
 #include "Account.h"
@@ -50,7 +52,7 @@ public:
 	// 实现
 public:
 	MySocket m_socket;
-
+	Account m_Account;
 	virtual ~CMainFrame();
 #ifdef _DEBUG
 	virtual void AssertValid() const;
@@ -60,7 +62,7 @@ public:
 protected:  // 控件条嵌入成员
 	CStatusBar        m_wndStatusBar;
 	//切分窗口对象
-	Account m_Account;
+
 private:
 	CSplitterWnd m_spliter;
 	//自定义消息处理函数

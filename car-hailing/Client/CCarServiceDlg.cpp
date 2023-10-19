@@ -68,6 +68,9 @@ BEGIN_MESSAGE_MAP(CCarServiceDlg, CFormView)
 	ON_EN_CHANGE(IDC_ENDPOSY, &CCarServiceDlg::OnEnChangeEndposy)
 	ON_BN_CLICKED(IDC_STARTMATCH, &CCarServiceDlg::OnBnClickedStartmatch)
 	ON_WM_TIMER()
+
+	ON_MESSAGE(NM_SHOW_EDIT, OnMyChange)
+	ON_MESSAGE(NM_TimerOver, OnMyChange)
 END_MESSAGE_MAP()
 
 
@@ -121,11 +124,30 @@ LRESULT CCarServiceDlg::OnMyChange(WPARAM wParam, LPARAM lParam)
 	switch (wParam)
 	{
 	case NM_SHOW_EDIT:
-		//MessageBox(_T("好好好"));
-		wchar_t* myString = reinterpret_cast<wchar_t*>(lParam);
+	{
+		CString myString = static_cast<LPCTSTR>(reinterpret_cast<LPCWSTR>(lParam));
 		m_valmessage += myString;
 		m_valmessage.Append(_T("\r\n"));
 		UpdateData(FALSE);
+
+		break;
+	}
+	case NM_TimerOver:
+	{
+		CMainFrame* pMainFrame = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
+		if (pMainFrame) {
+			//在主窗口里找套接字
+			MySocket& p_mySocket = pMainFrame->m_socket;
+			//定义发送字符串
+			wchar_t pkt[2048];
+			pkt[0] = 0xA0;//该协议定义为生成一个用户需求
+			wsprintf(pkt + 1, L"%s", m_OrderStr);
+			if (p_mySocket.Send(pkt, 2048) == SOCKET_ERROR) {
+				MessageBox(_T("发送失败了"));
+			}
+			break;
+		}
+	}
 
 	}
 	return 0;
@@ -246,19 +268,29 @@ void CCarServiceDlg::OnBnClickedStartmatch()
 
 	//点击开始匹配，将相关信息上传服务器
 	//先把相关信息弹出消息框提示再说
+	CMainFrame* pMainFrame = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
+	Driver newDriver;
+	newDriver.setCarModel(_tstoi(myclient.CarType));
+	double start[2] = { _tstof(myclient.StartX),_tstof(myclient.StartY) };
+	double end[2] = { _tstof(myclient.EndX),_tstof(myclient.EndY) };
+	Order newOrder(newDriver.ToString(), pMainFrame->m_Account.ToCString(), start, end);
+	m_OrderStr = newOrder.ToCString();
+	MessageBox(m_OrderStr);
 
-	CString cstr;
-	cstr.Format(_T("出发点坐标：（%s,%s）终点坐标：（%s,%s）车的种类：%s 发车时间：%s"), myclient.StartX, myclient.StartY, myclient.EndX, myclient.EndY, myclient.CarType, myclient.TimerType);
-	AfxMessageBox(cstr);
 
+	wchar_t wait_string[2048];
+	wmemset(wait_string, 0, 2048);
+	wsprintf(wait_string, L"预定的时间还未到，请客人耐心的等待哦");
 
 	//当我们点击这个按钮时
 	// 我们要求立刻叫车
 	if (myclient.TimerType == _T("0")) {
 		//进度条君你退下
+		PostMessage(NM_TimerOver, (WPARAM)NM_TimerOver, (LPARAM)0);
 	}
 	//我们要求等待30秒再叫车，此时进度条显现并开始移动
 	else if (myclient.TimerType == _T("20")) {
+
 		m_progressbar.ShowWindow(SW_SHOW);
 		m_showtime.ShowWindow(SW_SHOW);
 		//进度条初始化
@@ -272,10 +304,13 @@ void CCarServiceDlg::OnBnClickedStartmatch()
 		//打开计时器，此计时器ID为1，一秒跑一次
 		SetTimer(1, 1000, NULL);
 		//现在等待埋的雷炸掉，会调用OnTimer函数处理，转
+
+		SendMessage(NM_SHOW_EDIT, (WPARAM)NM_SHOW_EDIT, reinterpret_cast<LPARAM>(wait_string));
 	}
 	//这里是等待10分钟再叫车，此时进度条显现并开始移动
 	//这里我并没有写显示时间数据的逻辑（）
 	else {
+
 		m_progressbar.ShowWindow(SW_SHOW);
 		m_showtime.ShowWindow(SW_SHOW);
 		m_progressbar.SetRange(0, 10 * 60);
@@ -286,6 +321,8 @@ void CCarServiceDlg::OnBnClickedStartmatch()
 		m_progressbar.SetStep(1);
 		//打开计时器，此计时器ID为1，一秒跑一次
 		SetTimer(1, 1000, NULL);
+
+		SendMessage(NM_SHOW_EDIT, (WPARAM)NM_SHOW_EDIT, reinterpret_cast<LPARAM>(wait_string));
 	}
 }
 
@@ -297,10 +334,7 @@ void CCarServiceDlg::OnTimer(UINT_PTR nIDEvent)
 		//计时器时间已满，关闭定时器
 		KillTimer(1);
 		//等待时间已满需要发送一个消息
-
-		MessageBox(L"123");
-
-
+		PostMessage(NM_TimerOver, (WPARAM)NM_TimerOver, (LPARAM)0);
 	}
 	else {
 		TimerSum--;

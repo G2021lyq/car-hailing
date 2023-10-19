@@ -189,6 +189,17 @@ void CMainFrame::ParserPkt(MySocket* m_server) {
 		else {
 			MessageBox(L"邮箱已经被注册！！！");
 		}
+		break;
+	}
+	case 0xA1:
+	{
+		//这些信息将写到显示里去
+		wsprintf(GetBuff, L"%s", pkt + 1);
+		MessageBox(GetBuff);
+		//定义自定义消息，告诉CCarServiceDlg去执行相关业务。这里是显示。
+		CCarServiceDlg* pCarServiceDlg = dynamic_cast<CCarServiceDlg*>(m_spliter.GetPane(0, 1));
+		pCarServiceDlg->PostMessage(NM_SHOW_EDIT, (WPARAM)NM_SHOW_EDIT, reinterpret_cast<LPARAM>(GetBuff));
+		break;
 	}
 	}
 }

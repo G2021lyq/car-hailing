@@ -6,29 +6,16 @@ Driver::Driver()
 }
 
 Driver::Driver(int& count) {
-	// 初始化随机数种子
-	//srand(static_cast<unsigned>(time(nullptr)));
-	//std::cout << rand() << std::endl;
-
-
-	// 生成唯一按序生成的 ID 值
 	id = generateUniqueId(count);
-
+	srand(static_cast<unsigned int>(time(nullptr))); // 使用当前时间作为种子
 	// 生成随机车型（1-3）
 	carModel = generateRandomCarModel();
 
-	// 生成随机当前位置（位置用 xy 坐标表示，范围 0-20）
-	//currentPositionX = generateRandomCoordinate(0, 20);
-	//currentPositionY = generateRandomCoordinate(0, 20);
-	// 注意生成的随机当前位置应该在拉客范围之内
-	//currentPositionX = generateRandomCoordinate(拉客范围x1, 拉客范围x2);
-	//currentPositionY = generateRandomCoordinate(拉客范围y1, 拉客范围y2);
-
 	// 生成拉客范围（左上角坐标和右下角坐标的方形）
-	pickUpAreaLeftTopX = generateRandomCoordinate(0, 10);
-	pickUpAreaLeftTopY = generateRandomCoordinate(0, 10);
-	pickUpAreaRightBottomX = generateRandomCoordinate(11, 20);
-	pickUpAreaRightBottomY = generateRandomCoordinate(11, 20);
+	pickUpAreaLeftTopX = generateRandomCoordinate(1, 19);
+	pickUpAreaLeftTopY = generateRandomCoordinate(1, 14);
+	pickUpAreaRightBottomX = generateRandomCoordinate(pickUpAreaLeftTopX + 1, 20);
+	pickUpAreaRightBottomY = generateRandomCoordinate(pickUpAreaLeftTopY + 1, 20);
 
 	// 生成随机当前位置（位置用 xy 坐标表示，范围 拉客范围）
 	currentPositionX = generateRandomCoordinate(pickUpAreaLeftTopX, pickUpAreaRightBottomX);

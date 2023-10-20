@@ -16,6 +16,8 @@
 #include "CDisplayView.h"
 #include "CRegisterDlg.h"
 #include "Account.h"
+#include "Driver.h"
+#include "Order.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -105,6 +107,7 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 	case(NM_OK):
 		CStringW receivedString = static_cast<LPCTSTR>(reinterpret_cast<LPCWSTR>(lParam));
 		wsprintf(Buff, L"%s", receivedString);
+		MessageBox(Buff);
 
 		Context.m_pNewViewClass = RUNTIME_CLASS(CCarContinueDlg);
 		Context.m_pCurrentFrame = this;
@@ -194,14 +197,24 @@ void CMainFrame::ParserPkt(MySocket* m_server) {
 	case 0xA1:
 	{
 		//这些信息将写到显示里去
-		wsprintf(GetBuff, L"%s", pkt + 1);
-		MessageBox(GetBuff);
+		wsprintf(GetBuff, L"%s\r\n", pkt + 1);
 		//定义自定义消息，告诉CCarServiceDlg去执行相关业务。这里是显示。
 		CCarServiceDlg* pCarServiceDlg = dynamic_cast<CCarServiceDlg*>(m_spliter.GetPane(0, 1));
 		pCarServiceDlg->PostMessage(NM_SHOW_EDIT, (WPARAM)NM_SHOW_EDIT, reinterpret_cast<LPARAM>(GetBuff));
 		break;
 	}
+	case 0xA2:
+	{
+		wsprintf(GetBuff, L"%s", pkt + 1);
+		CString OrderStr(GetBuff);
+		Order m_Order;
+		m_Order = GetBuff;
+		CString myString = m_Order.ToCString();
+		LPARAM lParam = reinterpret_cast<LPARAM>(static_cast<LPCTSTR>(myString));
+		::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_OK, (WPARAM)NM_OK, lParam);
 	}
+	}
+
 }
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)

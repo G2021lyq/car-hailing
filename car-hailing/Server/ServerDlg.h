@@ -7,7 +7,15 @@
 #include "Driver.h"
 #include "MySocket.h"
 #include "MyFile.h"
+#include "ShowDlg.h"
 #include <vector>
+
+#define NM_ADD_Driver (WM_USER + 4000)
+#define NM_ADD_Order (WM_USER + 4001)
+
+#define NM_DiverSum (WM_USER + 4002)
+#define NM_BufferSum (WM_USER + 4003)
+#define NM_OrderSum (WM_USER + 4004)
 
 // CServerDlg 对话框
 class CServerDlg : public CDialogEx
@@ -27,6 +35,7 @@ protected:
 
 // 实现
 protected:
+	ShowDlg* mydlg;
 	HICON m_hIcon;
 
 	CBitmap m_bmBg;//背景的图
@@ -34,6 +43,8 @@ protected:
 
 	// 生成的消息映射函数
 	virtual BOOL OnInitDialog();
+	//自定义消息处理函数
+	afx_msg LRESULT OnMyChange(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()

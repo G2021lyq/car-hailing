@@ -3,7 +3,7 @@
 #include <cstdlib> // 用于随机数生成
 #include <ctime>   // 用于种子生成
 #include <vector>
-#include <afxstr.h>  // 用于CString
+#include <afx.h>
 
 class Driver {
 public:

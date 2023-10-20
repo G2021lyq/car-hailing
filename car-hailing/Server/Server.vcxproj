@@ -194,6 +194,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="ServerDlg.h" />
+    <ClInclude Include="ShowDlg.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
@@ -211,6 +212,7 @@
     </ClCompile>
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="ServerDlg.cpp" />
+    <ClCompile Include="ShowDlg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Server.rc" />

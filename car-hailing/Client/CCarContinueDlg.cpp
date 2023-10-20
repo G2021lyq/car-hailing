@@ -62,26 +62,17 @@ LRESULT CCarContinueDlg::OnMyChange(WPARAM wParam, LPARAM lParam)
 	case NM_START_SERVICE:
 		CString OrderStr = static_cast<LPCTSTR>(reinterpret_cast<LPCWSTR>(lParam));
 		MessageBox(OrderStr);
-
-		//ToDo::
-		//读取三个坐标
-		//Order order;
-		//order.FromCString(OrderStr);
-		//start = (int*)order.GetStart();
-		//end = (int*)order.GetEnd();
-		//Driver Cdriver;
-		//MessageBox(order.GetDriver());
-		//Cdriver.FromCString(order.GetDriver());
-		//driver[0] = Cdriver.getCurrentPositionX();
-		//driver[1] = Cdriver.getCurrentPositionY();
-
+		Order m_Order;
+		m_Order = OrderStr;
+		Driver m_Driver;
+		m_Driver = m_Order.GetDriver();
 		//测试数据
-		start[0] = 2;
-		start[1] = 2;
-		m_end[0] = 14;
-		m_end[1] = 14;
-		driver[0] = 3;
-		driver[1] = 7;
+		start[0] = m_Order.getStart()[0];
+		start[1] = m_Order.getStart()[1];
+		m_end[0] = m_Order.getEnd()[0];
+		m_end[1] = m_Order.getEnd()[1];
+		driver[0] = m_Driver.getCurrentPositionX();
+		driver[1] = m_Driver.getCurrentPositionY();
 
 
 		CRect rect;

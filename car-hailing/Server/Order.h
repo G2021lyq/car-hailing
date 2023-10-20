@@ -8,7 +8,10 @@ public:
 	Order(const CString& passenger, double* start, double* end);
 	Order(const CString& driver, const CString& passenger, double* start, double* end);
 
+	double* getStart();
+	double* getEnd();
 
+	void SetDriver(CString driverStr);
 	CString GetDriver() const;
 	CString GetPassenger() const;
 	double GetDistance() const;

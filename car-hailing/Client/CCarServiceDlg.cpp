@@ -71,6 +71,7 @@ BEGIN_MESSAGE_MAP(CCarServiceDlg, CFormView)
 
 	ON_MESSAGE(NM_SHOW_EDIT, OnMyChange)
 	ON_MESSAGE(NM_TimerOver, OnMyChange)
+	ON_MESSAGE(NM_Finish, OnMyChange)
 END_MESSAGE_MAP()
 
 
@@ -113,8 +114,6 @@ void CCarServiceDlg::OnBnClickedButton2()
 	LPARAM lParam = reinterpret_cast<LPARAM>(static_cast<LPCTSTR>(myString));
 	::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_OK, (WPARAM)NM_OK, lParam);
 
-	//CMainFrame* pMainFrame = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
-	//pMainFrame->PostMessage(NM_OK, (WPARAM)NM_OK, reinterpret_cast<LPARAM>(myWCharString));
 
 	// TODO: 在此添加控件通知处理程序代码
 }
@@ -147,6 +146,10 @@ LRESULT CCarServiceDlg::OnMyChange(WPARAM wParam, LPARAM lParam)
 			}
 			break;
 		}
+	}
+	case (NM_Finish):
+	{
+		break;
 	}
 
 	}

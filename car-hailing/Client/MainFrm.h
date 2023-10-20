@@ -28,6 +28,8 @@
 
 #define NM_TimerOver (WM_USER+3001)
 
+#define NM_Finish (WM_USER+3002)
+
 
 #include "MySocket.h"
 #include "Account.h"

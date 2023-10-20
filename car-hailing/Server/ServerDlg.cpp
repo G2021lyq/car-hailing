@@ -13,11 +13,26 @@
 #include "HistoryRecord.h"
 #include "MyFile.h"
 #include "Account.h"
+#include <list>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <queue>
+
 
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+const int maxBufferSize = 5; // 队列的最大容量
+int BufferSum;
+int DriverSum;
+int OrderSum;
+std::list<CString> buffer; // 共享队列
+std::mutex buffer_mtx; // 互斥锁，用于保护共享队列
+std::condition_variable notFull; // 缓冲区不满条件变量
+std::condition_variable notEmpty; // 缓冲区不空条件变量
 
 // CServerDlg 对话框
 
@@ -44,10 +59,130 @@ BEGIN_MESSAGE_MAP(CServerDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_Start, &CServerDlg::OnBnClickedButtonStart)
 
 	ON_MESSAGE(SOCKET_EVENT, OnSocket)
+	ON_MESSAGE(NM_ADD_Driver, OnMyChange)
+	ON_MESSAGE(NM_ADD_Order, OnMyChange)
 
 END_MESSAGE_MAP()
+void producer(ShowDlg* mydlg) {
+	//获取锁，尝试访问共享队列
+	std::unique_lock<std::mutex> lock(buffer_mtx);
+	Driver driver(mydlg->count); //使用随机方式
+	//如果内容多了，先等待
+	while (buffer.size() >= maxBufferSize) {
+		notFull.wait(lock);
+	}
+	//生产内容
+	CString newDriverStr = driver.ToString();
+	mydlg->MessageBox(newDriverStr);
+	buffer.push_back(newDriverStr);
+
+	DriverSum--;
+	BufferSum++;
+	mydlg->PostMessage(NM_DiverSum, (WPARAM)NM_DiverSum, (LPARAM)DriverSum);
+	mydlg->PostMessage(NM_BufferSum, (WPARAM)NM_BufferSum, (LPARAM)BufferSum);
+	lock.unlock();
+	//成功生产数据
+	notEmpty.notify_all(); // 通知消费者队列非空
+	//生产出数据，进程则死亡
+}
+
+//添加参数，SOCKET
+void consumer(ShowDlg* mydlg) {
+	//获取锁
+	std::unique_lock<std::mutex> lock(buffer_mtx);
+	//空了则等待
+	while (buffer.size() <= 0) {
+		notEmpty.wait(lock);
+	}
+	//补充算法
+	CString driverStr = buffer.back(); // 获取尾部元素
+	buffer.pop_back(); // 删除尾部元素
+	//补充算法
+
+	BufferSum--;
+	OrderSum--;
+	mydlg->PostMessage(NM_OrderSum, (WPARAM)NM_OrderSum, (LPARAM)OrderSum);
+	mydlg->PostMessage(NM_BufferSum, (WPARAM)NM_BufferSum, (LPARAM)BufferSum);
+
+	lock.unlock();
+	notFull.notify_all(); // 通知生产者队列非满
+	//这里应该进行一次网络通信
+}
 
 
+//添加参数，SOCKET
+void consumerSocket(ShowDlg* mydlg, MySocket* from, CString OrderStr) {
+	//获取锁
+	std::unique_lock<std::mutex> lock(buffer_mtx);
+	//空了则等待
+	while (buffer.size() <= 0) {
+		notEmpty.wait(lock);
+	}
+
+	//补充算法
+	CString driverStr = buffer.back(); // 获取尾部元素
+	buffer.pop_back(); // 删除尾部元素
+	//补充算法
+
+	BufferSum--;
+	OrderSum--;
+	mydlg->PostMessage(NM_OrderSum, (WPARAM)NM_OrderSum, (LPARAM)OrderSum);
+	mydlg->PostMessage(NM_BufferSum, (WPARAM)NM_BufferSum, (LPARAM)BufferSum);
+
+	lock.unlock();
+	notFull.notify_all(); // 通知生产者队列非满
+	//这里应该进行一次网络通信
+	Order m_Order;
+	m_Order = OrderStr;
+	m_Order.SetDriver(driverStr);
+
+	//回消息，客户端显示
+	wchar_t newMessage[2048];
+	wmemset(newMessage, 0, 2048);
+	newMessage[0] = 0xA1;//该协议用于显示于用户的显示屏上
+	wsprintf(newMessage + 1, L"匹配成功，享受你的旅程");
+	if (from->Send(newMessage, 2048) == SOCKET_ERROR) {
+		mydlg->MessageBox(L"服务器发送消息失败！");
+	}
+	wmemset(newMessage, 0, 2048);
+	newMessage[0] = 0xA2;//该协议用于显示于用户的显示屏上
+	wsprintf(newMessage + 1, m_Order.ToCString());
+	if (from->Send(newMessage, 2048) == SOCKET_ERROR) {
+		mydlg->MessageBox(L"服务器发送消息失败！");
+	}
+}
+
+
+LRESULT CServerDlg::OnMyChange(WPARAM wParam, LPARAM lParam)
+{
+	switch (wParam)
+	{
+	case (NM_ADD_Driver):
+	{
+		std::thread m_producer;
+		std::unique_lock<std::mutex> lock(buffer_mtx);
+		DriverSum++;
+		mydlg->PostMessage(NM_DiverSum, (WPARAM)NM_DiverSum, (LPARAM)DriverSum);
+		lock.unlock();
+		m_producer = std::thread(producer, mydlg);
+		m_producer.detach();
+		break;
+	}
+	case (NM_ADD_Order):
+	{
+		std::thread m_consumer;
+		std::unique_lock<std::mutex> lock(buffer_mtx);
+		OrderSum++;
+		mydlg->PostMessage(NM_OrderSum, (WPARAM)NM_OrderSum, (LPARAM)OrderSum);
+		lock.unlock();
+		m_consumer = std::thread(consumer, mydlg);
+		m_consumer.detach();
+		break;
+
+	}
+	}
+	return 0;
+}
 // CServerDlg 消息处理程序
 
 BOOL CServerDlg::OnInitDialog()
@@ -76,10 +211,10 @@ BOOL CServerDlg::OnInitDialog()
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
+
 // 如果向对话框添加最小化按钮，则需要下面的代码
 //  来绘制该图标。  对于使用文档/视图模型的 MFC 应用程序，
 //  这将由框架自动完成。
-
 void CServerDlg::OnPaint()
 {
 	if (IsIconic())
@@ -339,9 +474,13 @@ void CServerDlg::ParserPkt(MySocket* from)
 		if (from->Send(newMessage, 2048) == SOCKET_ERROR) {
 			MessageBox(_T("服务器发送消息失败！"));
 		}
-
-
-
+		std::unique_lock<std::mutex> lock(buffer_mtx);
+		OrderSum++;
+		mydlg->PostMessage(NM_OrderSum, (WPARAM)NM_OrderSum, (LPARAM)OrderSum);
+		lock.unlock();
+		std::thread m_consumer;
+		m_consumer = std::thread(consumerSocket, mydlg, from, newOrder.ToCString());
+		m_consumer.detach();
 	}
 	// 无论怎样都将信息传给edit里面
 	Append(ShowBuff);
@@ -399,20 +538,13 @@ void CServerDlg::OnBnClickedButtonStart()
 
 void CServerDlg::CreatDriver()
 {
-	// 生成3个司机对象并添加到向量中
-	for (int i = 0; i < 3; ++i) {
-		Driver driver(count);
-		drivers.push_back(driver);
-	}
+	mydlg = new ShowDlg;
+	mydlg->Create(IDD_SHOW_DIALOG, this);
+	mydlg->ShowWindow(SW_SHOW);
 
-	// 遍历司机对象向量并访问属性
-	for (Driver& driver : drivers) {
-		CString carMessage = driver.ToString();
-		//MessageBox(carMessage);
-		Driver newDriver;
-		newDriver = carMessage;
-		//MessageBox(carMessage);
-	}
+	mydlg->PostMessage(NM_DiverSum, (WPARAM)NM_DiverSum, (LPARAM)DriverSum);
+	mydlg->PostMessage(NM_OrderSum, (WPARAM)NM_OrderSum, (LPARAM)OrderSum);
+	mydlg->PostMessage(NM_BufferSum, (WPARAM)NM_BufferSum, (LPARAM)BufferSum);
 }
 
 

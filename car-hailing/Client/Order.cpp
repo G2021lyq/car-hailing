@@ -53,6 +53,21 @@ Order::Order(const CString& driver, const CString& passenger, double* start, dou
 	m_isCancelled = false;
 }
 
+double* Order::getStart()
+{
+	return this->m_start;
+}
+
+double* Order::getEnd()
+{
+	return this->m_end;
+}
+
+void Order::SetDriver(CString driverStr)
+{
+	this->m_driver = driverStr;
+}
+
 // 获取司机名称
 CString Order::GetDriver() const
 {
@@ -120,43 +135,53 @@ CString Order::CalculateEstimatedTime() {
 }
 
 CString Order::ToCString() const {
+	// 使用CString的Format方法将订单类的成员格式化为字符串
 	CString strOrder;
-	strOrder.Format(_T("Driver: %s, Passenger: %s, Start: %.2f, %.2f, End: %.2f, %.2f, Distance: %.2f km, Bill Amount: %.2f, Estimated Time: %s, Is Cancelled: %s"),
-		m_driver, m_passenger, m_start[0], m_start[1], m_end[0], m_end[0], m_distance, m_billAmount, m_estimatedTime, m_isCancelled ? _T("Yes") : _T("No"));
+	strOrder.Format(_T("%s#%s#%.2f#%.2f#%s#%d#%.2f#%.2f#%.2f#%.2f"),
+		m_driver, m_passenger, m_distance, m_billAmount,
+		m_estimatedTime, m_isCancelled, m_start[0], m_start[1], m_end[0], m_end[1]);
+
 	return strOrder;
 }
 
 void Order::FromCString(const CString& strOrder) {
-	// 解析输入的字符串，以逗号和空格为分隔符
-	CStringArray parts;
-	int startPos = 0;
-	int endPos = strOrder.Find(_T(','), startPos);
+	// 使用Tokenize方法将CString字符串分割成多个子串
+	CString str = strOrder;
+	CString delimiter = _T("#");
 
-	while (endPos != -1) {
-		parts.Add(strOrder.Mid(startPos, endPos - startPos));
-		startPos = endPos + 2; // Skip the comma and space
-		endPos = strOrder.Find(_T(','), startPos);
-	}
+	int pos = 0;
+	CString token = str.Tokenize(delimiter, pos);
+	m_driver = token;
 
-	// 处理最后一个字段
-	if (startPos < strOrder.GetLength()) {
-		parts.Add(strOrder.Mid(startPos));
-	}
+	token = str.Tokenize(delimiter, pos);
+	m_passenger = token;
 
-	// 检查是否已取消
-	m_isCancelled = (parts[9] == _T("Yes"));
+	token = str.Tokenize(delimiter, pos);
+	m_distance = _tstof(token);
 
-	// 设置订单对象的各个属性
-	m_driver = parts[0].Mid(parts[0].Find(_T(':')) + 2); // Skip "Driver: "
-	m_passenger = parts[1].Mid(parts[1].Find(_T(':')) + 2); // Skip "Passenger: "
-	m_start[0] = _tstof(parts[2].Mid(parts[2].Find(_T(':')) + 2)); // Skip "Start: "
-	m_start[1] = _tstof(parts[3]);
-	m_end[0] = _tstof(parts[4].Mid(parts[4].Find(_T(':')) + 2)); // Skip "End: "
-	m_end[1] = _tstof(parts[5]);
-	m_distance = _tstof(parts[6].Mid(parts[6].Find(_T(':')) + 2)); // Skip "Distance: "
-	m_billAmount = _tstof(parts[7].Mid(parts[7].Find(_T(':')) + 2)); // Skip "Bill Amount: "
-	m_estimatedTime = parts[8].Mid(parts[8].Find(_T(':')) + 2); // Skip "Estimated Time: "
+	token = str.Tokenize(delimiter, pos);
+	m_billAmount = _tstof(token);
+
+	token = str.Tokenize(delimiter, pos);
+	m_estimatedTime = token;
+
+	token = str.Tokenize(delimiter, pos);
+	m_isCancelled = (_tstoi(token) != 0);
+
+	token = str.Tokenize(delimiter, pos);
+	m_start[0] = _tstof(token);
+
+	token = str.Tokenize(delimiter, pos);
+	m_start[1] = _tstof(token);
+
+	token = str.Tokenize(delimiter, pos);
+	m_end[0] = _tstof(token);
+
+	token = str.Tokenize(delimiter, pos);
+	m_end[1] = _tstof(token);
 }
+
+
 
 
 

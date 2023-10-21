@@ -58,6 +58,15 @@ CMainFrame::~CMainFrame()
 {
 }
 
+//用来创建邮箱子系统，用于生成随机数验证码
+void CreateProcess_EmailSystem()
+{
+	//创建子系统
+
+	//注意管道，管道的两个参数应该设置为该类的成员。
+
+}
+
 LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 {
 	CCreateContext Context;
@@ -230,6 +239,9 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators) / sizeof(UINT));
 
 	//TODO::
+
+	//创建邮箱子系统
+	CreateProcess_EmailSystem();
 
 	//在创建主窗口前，先弹出登录窗口，必须登录成功，才能进入主窗口
 	//先填写服务器地址，默认地址是127.0.0.1

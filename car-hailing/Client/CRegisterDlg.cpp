@@ -98,11 +98,17 @@ void CRegisterDlg::OnBnClickedButton4()
 	CEdit* pEdit = (CEdit*)GetDlgItem(IDC_EDIT2);
 	pEdit->ShowWindow(SW_SHOW);
 
-	// 设置随机种子
+	//和子进程进行管道通信
+
+	//发送邮箱给它，发送
+
+	//获取到一个四位随机数，获取
 	srand(static_cast<unsigned>(time(nullptr)));
-	// 生成四位随机数
 	int randomNumber = rand() % 9000 + 1000;
+
+	//将这个随机数存储给Code
 	Code.Format(L"%d", randomNumber);
+	//弹出窗口，通知用户
 	CString myCString;
 	myCString.Format(_T("尊敬的用户，你的邮箱验证码是:%d"), randomNumber);
 	MessageBox(myCString);

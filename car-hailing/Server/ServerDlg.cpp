@@ -208,6 +208,19 @@ BOOL CServerDlg::OnInitDialog()
 	m_list.InsertColumn(0, _T("用户名"), LVCFMT_LEFT, 120);
 	m_list.InsertColumn(1, _T("IP"), LVCFMT_LEFT, 100);
 
+
+	int argc;
+	LPWSTR* argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+	if (argv) {
+		if (argc > 0)
+		{
+			CString __msg;
+			__msg.Format(L"%s", argv[1]);
+			if (__msg.Compare(_T("open")) == 0)
+				OnBnClickedButtonStart();
+
+		}
+	}
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -519,6 +532,12 @@ void CServerDlg::ClosePlayer(MySocket* from)
 	Append(out_msg);
 }
 
+
+DWORD WINAPI ShowMessageBox(LPVOID lpParam) {
+	MessageBox(NULL, L"成功打开服务器", L"消息框", MB_OK);
+	return 0;
+}
+
 void CServerDlg::OnBnClickedButtonStart()
 {
 	// TODO: 在此添加控件通知处理程序代码
@@ -527,9 +546,8 @@ void CServerDlg::OnBnClickedButtonStart()
 	if (isTrue)
 	{
 		if (m_socket.Listen())
-			AfxMessageBox(TEXT("开启服务器成功！"));
+			HANDLE hThread = CreateThread(NULL, 0, ShowMessageBox, NULL, 0, NULL);
 		GetDlgItem(IDC_BUTTON_Start)->EnableWindow(FALSE);
-
 		CreatDriver();
 		return;
 	}

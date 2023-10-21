@@ -88,6 +88,32 @@ void CRegisterDlg::OnBnClickedButton4()
 		MessageBox(L"邮箱不合法，请填写正确的邮箱");
 		return;
 	}
+
+	//和子进程进行管道通信
+
+	DWORD len;
+	wchar_t chBuf[2048];
+	wsprintf(chBuf, m_Email);
+	//发送邮箱给它，发送
+	bool ret = WriteFile(handle_write, chBuf, 2048, &len, NULL);//子进程读了后，父进程才可以继续写入管道
+	if (ret == false) {
+		MessageBox(L"管道通信失败，请尝试重启程序");
+		return;
+	}
+	//获取到一个四位随机数，获取
+	ret = ReadFile(handle_read, chBuf, 2048, &len, NULL);
+	if (wcscmp(m_Email, chBuf) == 0) {
+		MessageBox(L"管道通信失败，请尝试重启程序");
+		return;
+	}
+	//将这个随机数存储给Code
+	Code.Format(L"%s", chBuf);
+	//弹出窗口，通知用户
+	CString myCString;
+	myCString.Format(_T("尊敬的用户，你的邮箱验证码是:%s"), chBuf);
+	MessageBox(myCString);
+
+
 	CButton* pButton = (CButton*)GetDlgItem(IDC_BUTTON4);
 	pButton->EnableWindow(FALSE);
 	CStatic* pStaticText = (CStatic*)GetDlgItem(IDC_STATIC_Code);
@@ -97,19 +123,21 @@ void CRegisterDlg::OnBnClickedButton4()
 	EmailStaticCode.ShowWindow(SW_SHOW);
 	CEdit* pEdit = (CEdit*)GetDlgItem(IDC_EDIT2);
 	pEdit->ShowWindow(SW_SHOW);
-
-	//和子进程进行管道通信
-
-	//发送邮箱给它，发送
-
-	//获取到一个四位随机数，获取
-	srand(static_cast<unsigned>(time(nullptr)));
-	int randomNumber = rand() % 9000 + 1000;
-
-	//将这个随机数存储给Code
-	Code.Format(L"%d", randomNumber);
-	//弹出窗口，通知用户
-	CString myCString;
-	myCString.Format(_T("尊敬的用户，你的邮箱验证码是:%d"), randomNumber);
-	MessageBox(myCString);
+	pButton = (CButton*)GetDlgItem(IDC_BUTTON2);
+	pButton->EnableWindow(TRUE);
 }
+
+
+BOOL CRegisterDlg::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+
+	CButton* pButton = (CButton*)GetDlgItem(IDC_BUTTON2);
+	pButton->EnableWindow(FALSE);
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+				  // 异常: OCX 属性页应返回 FALSE
+}
+
+
+

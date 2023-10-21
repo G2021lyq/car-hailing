@@ -23,6 +23,8 @@
 #define new DEBUG_NEW
 #endif
 
+HANDLE handle_write;
+HANDLE handle_read;
 // CMainFrame
 
 IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
@@ -59,11 +61,81 @@ CMainFrame::~CMainFrame()
 }
 
 //用来创建邮箱子系统，用于生成随机数验证码
-void CreateProcess_EmailSystem()
+void CMainFrame::CreateProcess_EmailSystem()
 {
 	//创建子系统
 
 	//注意管道，管道的两个参数应该设置为该类的成员。
+	//第一步：创建管道
+	SECURITY_ATTRIBUTES saAttr;
+	saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
+	saAttr.bInheritHandle = TRUE;
+	saAttr.lpSecurityDescriptor = NULL;
+
+	// Create a pipe for the child process's STDIN. 
+	// 获取主窗口（CMainFrame）
+	CMainFrame* pMainFrame = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
+
+	bool ret = CreatePipe(&handle_read, &handle_write, &saAttr, 0);
+	if (ret == false)
+	{
+		pMainFrame->MessageBox(L"创建管道失败");
+	}
+
+	PROCESS_INFORMATION piProcInfo;
+	// Set up members of the PROCESS_INFORMATION structure. 
+	ZeroMemory(&piProcInfo, sizeof(PROCESS_INFORMATION));
+
+	// Set up members of the STARTUPINFO structure. // This structure specifies the STDIN handles for redirection.
+	STARTUPINFO si;
+	ZeroMemory(&si, sizeof(STARTUPINFO));
+	si.cb = sizeof(STARTUPINFO);
+	si.hStdInput = handle_read; //把管道的读句柄传给子进程
+	si.hStdOutput = handle_write;// 把管道的写句柄给子进程
+	si.dwFlags |= STARTF_USESTDHANDLES;
+	si.wShowWindow = SW_HIDE;  // 隐藏子进程窗口
+
+
+	//子进程、设置管道句柄的继承
+	wchar_t cmdline[] = _T("EmailSystem.exe");
+
+	ret = CreateProcess(NULL, cmdline, NULL, NULL,
+		TRUE,   // handles are inherited 
+		HIGH_PRIORITY_CLASS | CREATE_NO_WINDOW // creation flags
+		, NULL, NULL, &si, &piProcInfo);
+	if (!ret) { pMainFrame->MessageBox(L"创建进程失败"); }
+	else
+	{
+		// 把子进程加入到作业中
+
+		HANDLE HandleJob = CreateJobObject(nullptr, nullptr);
+		if (AssignProcessToJobObject(HandleJob, piProcInfo.hProcess))
+		{
+			JOBOBJECT_EXTENDED_LIMIT_INFORMATION LimitInfo;
+			ZeroMemory(&LimitInfo, sizeof(LimitInfo));
+			LimitInfo.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+			SetInformationJobObject(HandleJob, JobObjectExtendedLimitInformation, &LimitInfo, sizeof(LimitInfo));
+		}
+		CloseHandle(piProcInfo.hProcess);
+		CloseHandle(piProcInfo.hThread);
+	}
+
+	/*
+	{
+		DWORD len;
+		char chBuf[BUFSIZE];
+		bool ret = WriteFile(handle_write, chBuf, sizeof(chBuf), &len, NULL);//子进程读了后，父进程才可以继续写入管道
+		if (ret == false)
+		{
+			pMainFrame->MessageBox(L"写入失败");
+		}
+
+		ret = ReadFile(handle_read, chBuf, sizeof(chBuf), &len, NULL);
+		if (ret == false)
+		{
+			pMainFrame->MessageBox(L"读入失败");
+		}
+	}*/
 
 }
 
@@ -201,6 +273,7 @@ void CMainFrame::ParserPkt(MySocket* m_server) {
 		else {
 			MessageBox(L"邮箱已经被注册！！！");
 		}
+		m_socket.Close();
 		break;
 	}
 	case 0xA1:
@@ -317,8 +390,6 @@ tryagain:
 		{
 			MessageBox(_T("发送数据错误!"));
 		}
-
-		m_socket.Close();
 		goto tryagain;
 	}
 	//输入信息校验

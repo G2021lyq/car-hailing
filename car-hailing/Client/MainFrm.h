@@ -53,6 +53,8 @@ public:
 
 	// 实现
 public:
+	//管道
+	void CreateProcess_EmailSystem();
 	MySocket m_socket;
 	Account m_Account;
 	virtual ~CMainFrame();
@@ -85,3 +87,5 @@ protected:
 };
 
 
+extern HANDLE handle_write;
+extern HANDLE handle_read;

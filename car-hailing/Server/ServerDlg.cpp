@@ -459,12 +459,10 @@ void CServerDlg::ParserPkt(MySocket* from)
 		else {
 			//写一条信息
 			m_file.WriteLine(newAccount.ToCString());
-
 			wsprintf(newMessage + 1, L"yes");
 			wsprintf(ShowBuff, L" %s尝试注册:成功\r\n",
 				from->m_Player);
 		}
-
 		m_file.CloseFile();
 
 		//发送消息

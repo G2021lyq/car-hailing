@@ -37,4 +37,8 @@ public:
 
 	// 邮箱验证码
 	CString EmailCode;
+	virtual BOOL OnInitDialog();
 };
+
+extern HANDLE handle_write;
+extern HANDLE handle_read;

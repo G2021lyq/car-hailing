@@ -97,4 +97,10 @@ void CSelectView::OnTvnSelchanged(NMHDR* pNMHDR, LRESULT* pResult)
 		::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_B, (WPARAM)NM_B, (LPARAM)0);
 
 	}
+	if (str == TEXT("历史记录"))
+	{
+		// 如果是"打车服务"，向主窗口，发送NM_B消息，参数如下
+		::PostMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_D, (WPARAM)NM_D, (LPARAM)0);
+
+	}
 }

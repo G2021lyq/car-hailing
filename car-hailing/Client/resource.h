@@ -20,6 +20,7 @@
 #define IDB_CAR                         324
 #define IDB_BITMAP2                     325
 #define IDB_USER                        325
+#define IDD_DIALOG_History              326
 #define IDC_IPADDRESS1                  1000
 #define IDC_IPADDRESS                   1000
 #define IDC_EDIT1                       1001
@@ -50,7 +51,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        326
+#define _APS_NEXT_RESOURCE_VALUE        328
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1029
 #define _APS_NEXT_SYMED_VALUE           313

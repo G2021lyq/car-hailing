@@ -73,7 +73,6 @@ void producer(ShowDlg* mydlg) {
 	}
 	//生产内容
 	CString newDriverStr = driver.ToString();
-	mydlg->MessageBox(newDriverStr);
 	buffer.push_back(newDriverStr);
 
 	DriverSum--;
@@ -144,12 +143,14 @@ void consumerSocket(ShowDlg* mydlg, MySocket* from, CString OrderStr) {
 	if (from->Send(newMessage, 2048) == SOCKET_ERROR) {
 		mydlg->MessageBox(L"服务器发送消息失败！");
 	}
+	Sleep(100);
 	wmemset(newMessage, 0, 2048);
 	newMessage[0] = 0xA2;//该协议用于显示于用户的显示屏上
 	wsprintf(newMessage + 1, m_Order.ToCString());
 	if (from->Send(newMessage, 2048) == SOCKET_ERROR) {
 		mydlg->MessageBox(L"服务器发送消息失败！");
 	}
+	Sleep(100);
 }
 
 
@@ -492,6 +493,37 @@ void CServerDlg::ParserPkt(MySocket* from)
 		std::thread m_consumer;
 		m_consumer = std::thread(consumerSocket, mydlg, from, newOrder.ToCString());
 		m_consumer.detach();
+	}
+	else if (SendBuff[0] == 0x17)
+	{
+		wsprintf(SendBuff, L"%s", SendBuff + 1);
+		Order newOrder;
+		newOrder = SendBuff;
+
+		m_file.SetFilePathAccount(m_file.GetFilePathAccount(), m_file.GetPathNew(from->m_Player));
+		m_file.OpenFile();
+		m_file.WriteLine(newOrder.ToCString());
+		m_file.CloseFile();
+
+	}
+	else if (SendBuff[0] == 0x18)
+	{
+		wsprintf(SendBuff, L"%s", SendBuff + 1);
+		int Number = _ttoi(SendBuff);
+		from->m_Player;
+		m_file.SetFilePathAccount(m_file.GetFilePathAccount(), m_file.GetPathNew(from->m_Player));
+		m_file.OpenFile();
+		CString ans = m_file.GetStringByNumber(Number);
+		m_file.CloseFile();
+		if (ans == L"") return;
+		//回消息，客户端显示
+		wchar_t newMessage[2048];
+		wmemset(newMessage, 0, 2048);
+		newMessage[0] = 0x18;//该协议用于显示于用户的显示屏上
+		wsprintf(newMessage + 1, L"%s", ans.GetString());
+		if (from->Send(newMessage, 2048) == SOCKET_ERROR) {
+			MessageBox(_T("服务器发送消息失败！"));
+		}
 	}
 	// 无论怎样都将信息传给edit里面
 	Append(ShowBuff);

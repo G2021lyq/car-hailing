@@ -27,6 +27,8 @@ public:
 	std::wstring& GetFilePathAccount();
 	CString& GetPathAccount();
 
+	CString GetPathNew(CString email);
+
 	//设置文件路径
 	void SetFilePathAccount(std::wstring FilePath, CString Path);
 
@@ -51,7 +53,6 @@ public:
 
 	//将某一行号的字符串修改为指定内容
 	void ReplaceLineByNumber(int Number, CString& ReplaceString);
-
 
 };
 

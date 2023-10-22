@@ -13,6 +13,15 @@ CString& MyFile::GetPathAccount()
 	// TODO: 在此处插入 return 语句
 }
 
+CString MyFile::GetPathNew(CString email)
+{
+
+	CString m_path;
+	m_path.Format(L".//Account//%s.txt", email.GetString());
+	return m_path;
+	// TODO: 在此处插入 return 语句
+}
+
 void MyFile::SetFilePathAccount(std::wstring FilePath, CString _Path)
 {
 	this->Path = _Path;

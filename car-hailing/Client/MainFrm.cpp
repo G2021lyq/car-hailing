@@ -11,6 +11,7 @@
 #include "CUserDlg.h"
 #include "CCarServiceDlg.h"
 #include "CCarContinueDlg.h"
+#include "CHistoryDlg.h"
 
 #include "CSelectView.h"
 #include "CDisplayView.h"
@@ -35,6 +36,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_MESSAGE(NM_A, OnMyChange)
 	ON_MESSAGE(NM_B, OnMyChange)
 	ON_MESSAGE(NM_C, OnMyChange)
+	ON_MESSAGE(NM_D, OnMyChange)
 
 	ON_MESSAGE(NM_OK, OnMyChange)
 
@@ -138,7 +140,43 @@ void CMainFrame::CreateProcess_EmailSystem()
 	}*/
 
 }
+//用来创建二维码进程
+void CMainFrame::CreateProcess_Qrcode(Order& m_Order) {
+	PROCESS_INFORMATION piProcInfo;
+	// Set up members of the PROCESS_INFORMATION structure. 
+	ZeroMemory(&piProcInfo, sizeof(PROCESS_INFORMATION));
+	// Set up members of the STARTUPINFO structure. // This structure specifies the STDIN handles for redirection.
+	STARTUPINFO si;
+	ZeroMemory(&si, sizeof(STARTUPINFO));
+	si.cb = sizeof(STARTUPINFO);
+	si.dwFlags |= STARTF_USESTDHANDLES;
+	si.wShowWindow = SW_SHOW;  // 隐藏子进程窗口
+		//子进程、设置管道句柄的继承
 
+	wchar_t cmdline[2048];
+	wmemset(cmdline, 0, 2048);
+	CStringW a;
+	a.Format(L"%.2lf", m_Order.GetBillAmount());
+	wsprintf(cmdline, L"Qrcode.exe %s %s", m_Account.getEmail().GetString(), a);
+
+	bool ret = CreateProcess(NULL, cmdline, NULL, NULL, TRUE, 0, NULL, NULL, &si, &piProcInfo);
+	if (!ret) { MessageBox(L"创建进程失败"); }
+	else
+	{
+		// 把子进程加入到作业中
+		HANDLE HandleJob = CreateJobObject(nullptr, nullptr);
+		if (AssignProcessToJobObject(HandleJob, piProcInfo.hProcess))
+		{
+			JOBOBJECT_EXTENDED_LIMIT_INFORMATION LimitInfo;
+			ZeroMemory(&LimitInfo, sizeof(LimitInfo));
+			LimitInfo.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+			SetInformationJobObject(HandleJob, JobObjectExtendedLimitInformation, &LimitInfo, sizeof(LimitInfo));
+		}
+		CloseHandle(piProcInfo.hProcess);
+		CloseHandle(piProcInfo.hThread);
+	}
+
+}
 LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 {
 	CCreateContext Context;
@@ -153,7 +191,7 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 	case(NM_A):
 	{
 		receivedString = m_Account.ToCString();
-		wsprintf(Buff, L"%s", receivedString);
+		wsprintf(Buff, L"%s", receivedString.GetString());
 
 		Context.m_pNewViewClass = RUNTIME_CLASS(CUserDlg);
 		Context.m_pCurrentFrame = this;
@@ -170,7 +208,7 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		break;
 	}
 	case(NM_B):
-
+	{
 		Context.m_pNewViewClass = RUNTIME_CLASS(CCarServiceDlg);
 		Context.m_pCurrentFrame = this;
 		Context.m_pLastView = (CFormView*)m_spliter.GetPane(0, 1);
@@ -184,10 +222,47 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 
 		pNewView->PostMessage(NM_START_ORDER, (WPARAM)NM_START_ORDER, 0);
 		break;
-
-	case(NM_OK):
+	}
+	case (NM_C):
+	{
 		CStringW receivedString = static_cast<LPCTSTR>(reinterpret_cast<LPCWSTR>(lParam));
-		wsprintf(Buff, L"%s", receivedString);
+		Order m_Order;
+		m_Order = receivedString;
+		CreateProcess_Qrcode(m_Order);
+		//定义发送字符串
+		wchar_t pkt[2048];
+		pkt[0] = 0x17;//默认pkt[0]为协议信息
+		//定义主体信息
+		wsprintf(pkt + 1, L"%s", m_Order.ToCString().GetString());
+		//发送信息包含两部分，字符串和总空间，注意不能用wcslen代替
+		if (m_socket.Send(pkt, 2048) == SOCKET_ERROR) {
+			//每此写Send都要进行错误检测
+			MessageBox(TEXT("发送测试SOCKET信息失败了"));
+		}
+
+		//SendMessage(NM_D, (WPARAM)NM_D, (LPARAM)0);
+		//Sleep(100);
+		break;
+	}
+	case (NM_D):
+	{
+		Context.m_pNewViewClass = RUNTIME_CLASS(CHistoryDlg);
+		Context.m_pCurrentFrame = this;
+		Context.m_pLastView = (CFormView*)m_spliter.GetPane(0, 1);
+		m_spliter.DeleteView(0, 1);
+		m_spliter.CreateView(0, 1, RUNTIME_CLASS(CHistoryDlg)
+			, CSize(810, 720), &Context);
+		pNewView = (CHistoryDlg*)m_spliter.GetPane(0, 1);
+		m_spliter.RecalcLayout();
+		pNewView->OnInitialUpdate();
+		m_spliter.SetActivePane(0, 1);
+
+		break;
+	}
+	case(NM_OK):
+	{
+		CStringW receivedString = static_cast<LPCTSTR>(reinterpret_cast<LPCWSTR>(lParam));
+		wsprintf(Buff, L"%s", receivedString.GetString());
 		MessageBox(Buff);
 
 		Context.m_pNewViewClass = RUNTIME_CLASS(CCarContinueDlg);
@@ -202,7 +277,9 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 		m_spliter.SetActivePane(0, 1);
 
 		pNewView->PostMessage(NM_START_SERVICE, (WPARAM)NM_START_SERVICE, reinterpret_cast<LPARAM>(Buff));
+		Sleep(100);
 		break;
+	}
 	}
 
 	return 0;
@@ -283,17 +360,34 @@ void CMainFrame::ParserPkt(MySocket* m_server) {
 		//定义自定义消息，告诉CCarServiceDlg去执行相关业务。这里是显示。
 		CCarServiceDlg* pCarServiceDlg = dynamic_cast<CCarServiceDlg*>(m_spliter.GetPane(0, 1));
 		pCarServiceDlg->PostMessage(NM_SHOW_EDIT, (WPARAM)NM_SHOW_EDIT, reinterpret_cast<LPARAM>(GetBuff));
+		Sleep(100);
 		break;
 	}
 	case 0xA2:
 	{
 		wsprintf(GetBuff, L"%s", pkt + 1);
-		CString OrderStr(GetBuff);
+		CString OrderStr;
+		OrderStr.Format(L"%s", GetBuff);
 		Order m_Order;
 		m_Order = GetBuff;
 		CString myString = m_Order.ToCString();
-		LPARAM lParam = reinterpret_cast<LPARAM>(static_cast<LPCTSTR>(myString));
-		::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_OK, (WPARAM)NM_OK, lParam);
+		MessageBox(myString);
+
+		LPARAM lParam = reinterpret_cast<LPARAM>(static_cast<LPCTSTR>(OrderStr));
+		SendMessage(NM_OK, (WPARAM)NM_OK, lParam);
+
+		// 		CCarServiceDlg* pCarServiceDlg = dynamic_cast<CCarServiceDlg*>(m_spliter.GetPane(0, 1));
+		// 		pCarServiceDlg->PostMessage(NM_Finish, (WPARAM)NM_Finish, lParam);
+		Sleep(100);
+		break;
+	}
+	case 0x18:
+	{
+		wsprintf(GetBuff, L"%s", pkt + 1);
+		CHistoryDlg* pCarServiceDlg = dynamic_cast<CHistoryDlg*>(m_spliter.GetPane(0, 1));
+		pCarServiceDlg->PostMessage(NM_Page, (WPARAM)NM_Page, reinterpret_cast<LPARAM>(GetBuff));
+
+		break;
 	}
 	}
 
@@ -384,7 +478,7 @@ tryagain:
 		wchar_t pkt[200];
 		pkt[0] = 0x07; // 默认pkt[0]为协议信息
 		// 定义0x11为登录所发送的信息,并补充具体传递的信息
-		wsprintf(pkt + 1, L"%s,%s", cRegisterDlg.m_Email, cRegisterDlg.m_Password);
+		wsprintf(pkt + 1, L"%s,%s", cRegisterDlg.m_Email.GetString(), cRegisterDlg.m_Password.GetString());
 		// 发送
 		if (m_socket.Send(pkt, 200) == FALSE)
 		{
@@ -443,7 +537,7 @@ tryagain:
 	wchar_t pkt[200];
 	pkt[0] = 0x11; // 默认pkt[0]为协议信息
 	// 定义0x11为登录所发送的信息,并补充具体传递的信息
-	wsprintf(pkt + 1, L"%s,%s", cLoginDlg.m_username, cLoginDlg.m_password);
+	wsprintf(pkt + 1, L"%s,%s", cLoginDlg.m_username.GetString(), cLoginDlg.m_password.GetString());
 	// 发送
 	if (m_socket.Send(pkt, 200) == FALSE)
 	{

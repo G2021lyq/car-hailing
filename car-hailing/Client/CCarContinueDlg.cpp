@@ -60,19 +60,22 @@ LRESULT CCarContinueDlg::OnMyChange(WPARAM wParam, LPARAM lParam)
 	switch (wParam)
 	{
 	case NM_START_SERVICE:
+	{
+
 		CString OrderStr = static_cast<LPCTSTR>(reinterpret_cast<LPCWSTR>(lParam));
 		MessageBox(OrderStr);
-		Order m_Order;
+
 		m_Order = OrderStr;
 		Driver m_Driver;
 		m_Driver = m_Order.GetDriver();
+		MessageBox(OrderStr);
 		//测试数据
 		start[0] = m_Order.getStart()[0];
 		start[1] = m_Order.getStart()[1];
 		m_end[0] = m_Order.getEnd()[0];
 		m_end[1] = m_Order.getEnd()[1];
-		driver[0] = m_Driver.getCurrentPositionX();
-		driver[1] = m_Driver.getCurrentPositionY();
+		driver[0] = m_Driver.getCurrentPositionY();
+		driver[1] = m_Driver.getCurrentPositionX();
 
 
 		CRect rect;
@@ -115,26 +118,14 @@ LRESULT CCarContinueDlg::OnMyChange(WPARAM wParam, LPARAM lParam)
 			pdc->Rectangle(m_map[driver[0] - 1][driver[1] - 1]);
 		}
 		pdc->SelectObject(&pOldBrs);
-		SetTimer(1, driverspeed, NULL);
 
+		SetTimer(1, driverspeed, NULL);
 		break;
+	}
 	}
 	return 0;
 
 }
-
-
-
-//void CCarContinueDlg::OnPaint()
-//{
-//	// CPaintDC dc(this); // device context for painting
-//	// TODO: 在此处添加消息处理程序代码
-//	// 不为绘图消息调用 CFormView::OnPaint()
-//
-//
-//	CPaintDC pDC(this);
-//	SetTimer(1, 1000, NULL);
-//}
 
 
 void CCarContinueDlg::OnTimer(UINT_PTR nIDEvent)
@@ -178,10 +169,23 @@ void CCarContinueDlg::OnTimer(UINT_PTR nIDEvent)
 		pdc->SelectObject(&m_brush[1]);
 		pdc->Rectangle(m_map[start[0] - 1][start[1] - 1]);
 		pdc->DeleteDC();
+
+		if (start[1] == m_end[1] && start[0] == m_end[0])
+		{
+			KillTimer(1);
+			//可以加 结束行程flag
+			CString myString;
+			myString = m_Order.ToCString();
+			CMainFrame* pMainFrame = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
+
+			LPARAM lParam = reinterpret_cast<LPARAM>(static_cast<LPCTSTR>(myString));
+			::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_C, (WPARAM)NM_C, lParam);
+			Sleep(100);
+		}
 	}
-	if (start[1] == m_end[1] && start[0] == m_end[0])
-		KillTimer(1);
-	//可以加 结束行程flag
+
+
+
 
 	CFormView::OnTimer(nIDEvent);
 }

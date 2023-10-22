@@ -33,7 +33,7 @@ void DbgInfoW(std::wstring str)
 int main()
 {
 	//关闭交互
-	//ShowWindow(GetConsoleWindow(), SW_HIDE);
+	ShowWindow(GetConsoleWindow(), SW_HIDE);
 
 	//设置本地环境为中文
 	setlocale(LC_ALL, "chs");

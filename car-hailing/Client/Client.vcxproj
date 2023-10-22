@@ -187,6 +187,7 @@
     <ClInclude Include="CCarContinueDlg.h" />
     <ClInclude Include="CCarServiceDlg.h" />
     <ClInclude Include="CDisplayView.h" />
+    <ClInclude Include="CHistoryDlg.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="ClientDoc.h" />
     <ClInclude Include="ClientView.h" />
@@ -208,6 +209,7 @@
     <ClCompile Include="CCarContinueDlg.cpp" />
     <ClCompile Include="CCarServiceDlg.cpp" />
     <ClCompile Include="CDisplayView.cpp" />
+    <ClCompile Include="CHistoryDlg.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="ClientDoc.cpp" />
     <ClCompile Include="ClientView.cpp" />
@@ -230,6 +232,7 @@
     <ResourceCompile Include="Client.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resource.hm" />
     <None Include="res\Client.rc2">
       <FileType>RC</FileType>
     </None>

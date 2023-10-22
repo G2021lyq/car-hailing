@@ -30,9 +30,13 @@
 
 #define NM_Finish (WM_USER+3002)
 
+#define NM_Page (WM_USER+3003)
+
+
 
 #include "MySocket.h"
 #include "Account.h"
+#include "Order.h"
 
 class CMainFrame : public CFrameWnd
 {
@@ -55,6 +59,8 @@ public:
 public:
 	//管道
 	void CreateProcess_EmailSystem();
+	//二维码
+	void CreateProcess_Qrcode(Order& m_Order);
 	MySocket m_socket;
 	Account m_Account;
 	virtual ~CMainFrame();

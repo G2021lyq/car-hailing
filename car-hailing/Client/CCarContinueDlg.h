@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include "Order.h"
+
 //自定义的消息
 #define NM_START_SERVICE (WM_USER+2026)
 #define NM_D (WM_USER+2027)
@@ -32,6 +34,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
+	Order m_Order;
 	//自定义消息处理函数
 	//图片刷
 	CBrush m_brush[3];
@@ -47,6 +50,7 @@ public:
 	afx_msg LRESULT OnMyChange(WPARAM wParam, LPARAM lParam);
 	//afx_msg void OnPaint();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnBnClickedButton1();
 };
 
 

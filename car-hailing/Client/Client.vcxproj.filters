@@ -72,6 +72,9 @@
     <ClInclude Include="Account.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CHistoryDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -122,6 +125,9 @@
     <ClCompile Include="Account.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="CHistoryDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -157,6 +163,9 @@
   <ItemGroup>
     <None Include="res\Client.rc2">
       <Filter>资源文件</Filter>
+    </None>
+    <None Include="resource.hm">
+      <Filter>头文件</Filter>
     </None>
   </ItemGroup>
 </Project>

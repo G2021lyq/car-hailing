@@ -105,15 +105,14 @@ void CCarServiceDlg::OnBnClickedButton2()
 
 	//生成一个Order类
 	double point_1[2] = { 3.0,4.0 };
-	double point_2[2] = { 20.0,9.0 };
+	double point_2[2] = { 5.0,5.0 };
 	Order aOrder(driver.ToString(), L"passenger", point_1, point_2);
 
 	CString myString = aOrder.ToCString();
-	MessageBox(myString);
 
 	LPARAM lParam = reinterpret_cast<LPARAM>(static_cast<LPCTSTR>(myString));
 	::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_OK, (WPARAM)NM_OK, lParam);
-
+	Sleep(100);
 
 	// TODO: 在此添加控件通知处理程序代码
 }
@@ -128,7 +127,7 @@ LRESULT CCarServiceDlg::OnMyChange(WPARAM wParam, LPARAM lParam)
 		m_valmessage += myString;
 		m_valmessage.Append(_T("\r\n"));
 		UpdateData(FALSE);
-
+		Sleep(100);
 		break;
 	}
 	case NM_TimerOver:
@@ -140,15 +139,22 @@ LRESULT CCarServiceDlg::OnMyChange(WPARAM wParam, LPARAM lParam)
 			//定义发送字符串
 			wchar_t pkt[2048];
 			pkt[0] = 0xA0;//该协议定义为生成一个用户需求
-			wsprintf(pkt + 1, L"%s", m_OrderStr);
+			wsprintf(pkt + 1, L"%s", m_OrderStr.GetString());
 			if (p_mySocket.Send(pkt, 2048) == SOCKET_ERROR) {
 				MessageBox(_T("发送失败了"));
 			}
-			break;
 		}
+		Sleep(100);
+		break;
 	}
 	case (NM_Finish):
 	{
+		//OnBnClickedButton2();
+		CString myString = static_cast<LPCTSTR>(reinterpret_cast<LPCWSTR>(lParam));
+		MessageBox(myString);
+		LPARAM lParam = reinterpret_cast<LPARAM>(static_cast<LPCTSTR>(myString));
+		::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), NM_OK, (WPARAM)NM_OK, lParam);
+		Sleep(100);
 		break;
 	}
 
@@ -276,9 +282,8 @@ void CCarServiceDlg::OnBnClickedStartmatch()
 	newDriver.setCarModel(_tstoi(myclient.CarType));
 	double start[2] = { _tstof(myclient.StartX),_tstof(myclient.StartY) };
 	double end[2] = { _tstof(myclient.EndX),_tstof(myclient.EndY) };
-	Order newOrder(newDriver.ToString(), pMainFrame->m_Account.ToCString(), start, end);
+	Order newOrder(newDriver.ToString(), pMainFrame->m_Account.ToCString().GetString(), start, end);
 	m_OrderStr = newOrder.ToCString();
-	MessageBox(m_OrderStr);
 
 
 	wchar_t wait_string[2048];

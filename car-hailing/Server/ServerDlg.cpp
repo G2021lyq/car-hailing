@@ -1,7 +1,8 @@
-﻿
-// ServerDlg.cpp: 实现文件
+﻿// ServerDlg.cpp: 实现文件
 //
 
+#include <iostream>
+#include <cmath>
 #include "pch.h"
 #include "framework.h"
 #include "Server.h"
@@ -63,6 +64,7 @@ BEGIN_MESSAGE_MAP(CServerDlg, CDialogEx)
 	ON_MESSAGE(NM_ADD_Order, OnMyChange)
 
 END_MESSAGE_MAP()
+
 void producer(ShowDlg* mydlg) {
 	//获取锁，尝试访问共享队列
 	std::unique_lock<std::mutex> lock(buffer_mtx);
@@ -108,32 +110,83 @@ void consumer(ShowDlg* mydlg) {
 	//这里应该进行一次网络通信
 }
 
+// 计算两点之间的直线距离
+double calculateDistance(double x1, double y1, double x2, double y2) {
+	double deltaX = x2 - x1;
+	double deltaY = y2 - y1;
+	return std::sqrt(deltaX * deltaX + deltaY * deltaY);
+}
+// 计算点到方形的最小距离
+double calculateMinimumDistance(double squareLeft, double squareTop, double squareRight, double squareBottom, double pointX, double pointY) {
+	// 检查点是否在方形内部
+	if (pointX >= squareLeft && pointX <= squareRight && pointY >= squareTop && pointY <= squareBottom) {
+		return 0.0; // 点在方形内部
+	}
+
+	// 计算点到方形四条边的距离
+	double distLeft = std::abs(pointX - squareLeft);
+	double distRight = std::abs(pointX - squareRight);
+	double distTop = std::abs(pointY - squareTop);
+	double distBottom = std::abs(pointY - squareBottom);
+
+	// 计算并返回最小距离
+	double ans = distLeft < distRight ? distLeft : distRight;
+	ans = ans < distTop ? ans : distTop;
+	ans = ans < distBottom ? ans : distBottom;
+	return ans;
+}
 
 //添加参数，SOCKET
 void consumerSocket(ShowDlg* mydlg, MySocket* from, CString OrderStr) {
-	//获取锁
-	std::unique_lock<std::mutex> lock(buffer_mtx);
-	//空了则等待
-	while (buffer.size() <= 0) {
-		notEmpty.wait(lock);
-	}
 
-	//补充算法
-	CString driverStr = buffer.back(); // 获取尾部元素
-	buffer.pop_back(); // 删除尾部元素
-	//补充算法
-
-	BufferSum--;
-	OrderSum--;
-	mydlg->PostMessage(NM_OrderSum, (WPARAM)NM_OrderSum, (LPARAM)OrderSum);
-	mydlg->PostMessage(NM_BufferSum, (WPARAM)NM_BufferSum, (LPARAM)BufferSum);
-
-	lock.unlock();
-	notFull.notify_all(); // 通知生产者队列非满
-	//这里应该进行一次网络通信
 	Order m_Order;
 	m_Order = OrderStr;
-	m_Order.SetDriver(driverStr);
+	double A = 5.0, B = 5.0, C = 0;
+
+	bool flag = false;
+	while (true) {
+		std::unique_lock<std::mutex> lock(buffer_mtx);
+		notEmpty.wait(lock, [] { return !buffer.empty(); });
+
+		for (std::list<CString>::iterator it = buffer.begin(); it != buffer.end(); ++it) {
+			CString DriverStr = *it;
+			Driver newDriver;
+			newDriver = DriverStr;
+
+			//判断车型是否匹配
+			if (!(newDriver.getCarModel() - 1 <= C)) continue;
+			//判断距离
+			double x1 = newDriver.getCurrentPositionX();
+			double y1 = newDriver.getCurrentPositionY();
+			double x2 = m_Order.getStart()[0];
+			double y2 = m_Order.getStart()[1];
+			if (!(calculateDistance(x1, y1, x2, y2) <= A)) continue;
+			//判断方形距离
+			double leftTopX = newDriver.getPickUpAreaLeftTopX();
+			double leftTopY = newDriver.getPickUpAreaLeftTopY();
+			double rightButtomX = newDriver.getPickUpAreaRightBottomX();
+			double rightButtonY = newDriver.getPickUpAreaRightBottomY();
+			double endX = m_Order.getEnd()[0];
+			double endY = m_Order.getEnd()[1];
+			if (!(calculateMinimumDistance(leftTopX, leftTopY, rightButtomX, rightButtonY, endX, endY) <= B))continue;
+			//成功匹配到了汽车
+			flag = true;
+			m_Order.SetDriver(DriverStr);
+			it = buffer.erase(it);
+			break;
+		}
+		if (flag) {
+			BufferSum--;
+			OrderSum--;
+			mydlg->PostMessage(NM_OrderSum, (WPARAM)NM_OrderSum, (LPARAM)OrderSum);
+			mydlg->PostMessage(NM_BufferSum, (WPARAM)NM_BufferSum, (LPARAM)BufferSum);
+			lock.unlock();
+			notFull.notify_one(); // 通知生产者线程
+			break;
+		}
+		C = 2; A++; B++;
+		Sleep(100);
+	}
 
 	//回消息，客户端显示
 	wchar_t newMessage[2048];
@@ -153,7 +206,6 @@ void consumerSocket(ShowDlg* mydlg, MySocket* from, CString OrderStr) {
 	Sleep(100);
 }
 
-
 LRESULT CServerDlg::OnMyChange(WPARAM wParam, LPARAM lParam)
 {
 	switch (wParam)
@@ -167,6 +219,7 @@ LRESULT CServerDlg::OnMyChange(WPARAM wParam, LPARAM lParam)
 		lock.unlock();
 		m_producer = std::thread(producer, mydlg);
 		m_producer.detach();
+		Sleep(100);
 		break;
 	}
 	case (NM_ADD_Order):
@@ -325,7 +378,7 @@ void CServerDlg::ParserPkt(MySocket* from)
 	// 读取数据
 	len = from->Receive(SendBuff, 2048);
 
-
+	// 0x11---服务器接收用户进入聊天室
 	if (SendBuff[0] == 0x11) {
 		// 0x11---服务器接收用户进入聊天室
 		CString ipaddr;             // IP字符串
@@ -398,6 +451,7 @@ void CServerDlg::ParserPkt(MySocket* from)
 		}
 
 	}
+	// 0x10---测试Socket的协议
 	else if (SendBuff[0] == 0x10)
 	{
 		MessageBox(L"收到测试信息");
@@ -425,6 +479,7 @@ void CServerDlg::ParserPkt(MySocket* from)
 		wsprintf(ShowBuff, L" %s发送了:%s\r\n 发送给%s:%s\r\n",
 			from->m_Player, SendBuff, from->m_Player, newMessage);
 	}
+	// 0x07---申请注册
 	else if (SendBuff[0] == 0x07) //申请注册的方式
 	{
 		wsprintf(SendBuff, L"%s", SendBuff + 1);
@@ -472,6 +527,7 @@ void CServerDlg::ParserPkt(MySocket* from)
 			MessageBox(L"服务器发送反馈信息失败！！");
 		}
 	}
+	// 0xA0---匹配司机
 	else if (SendBuff[0] == 0xA0) {
 		wsprintf(SendBuff, L"%s", SendBuff + 1);
 		Order newOrder;
@@ -494,6 +550,7 @@ void CServerDlg::ParserPkt(MySocket* from)
 		m_consumer = std::thread(consumerSocket, mydlg, from, newOrder.ToCString());
 		m_consumer.detach();
 	}
+	// 0x17---历史记录的写入
 	else if (SendBuff[0] == 0x17)
 	{
 		wsprintf(SendBuff, L"%s", SendBuff + 1);
@@ -506,6 +563,7 @@ void CServerDlg::ParserPkt(MySocket* from)
 		m_file.CloseFile();
 
 	}
+	// 0x18---历史记录的获取
 	else if (SendBuff[0] == 0x18)
 	{
 		wsprintf(SendBuff, L"%s", SendBuff + 1);

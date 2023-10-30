@@ -90,8 +90,8 @@ protected:
 	virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
 	//处理接收消息
 	void ParserPkt(MySocket* m_server);
-};
+	//};
 
 
-extern HANDLE handle_write;
-extern HANDLE handle_read;
+	extern HANDLE handle_write;
+	extern HANDLE handle_read;

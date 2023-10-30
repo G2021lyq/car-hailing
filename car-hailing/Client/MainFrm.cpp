@@ -66,28 +66,19 @@ CMainFrame::~CMainFrame()
 void CMainFrame::CreateProcess_EmailSystem()
 {
 	//创建子系统
-
 	//注意管道，管道的两个参数应该设置为该类的成员。
-	//第一步：创建管道
 	SECURITY_ATTRIBUTES saAttr;
 	saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
 	saAttr.bInheritHandle = TRUE;
 	saAttr.lpSecurityDescriptor = NULL;
-
 	// Create a pipe for the child process's STDIN. 
 	// 获取主窗口（CMainFrame）
 	CMainFrame* pMainFrame = dynamic_cast<CMainFrame*>(AfxGetMainWnd());
-
 	bool ret = CreatePipe(&handle_read, &handle_write, &saAttr, 0);
-	if (ret == false)
-	{
-		pMainFrame->MessageBox(L"创建管道失败");
-	}
-
+	if (ret == false)	pMainFrame->MessageBox(L"创建管道失败");
 	PROCESS_INFORMATION piProcInfo;
 	// Set up members of the PROCESS_INFORMATION structure. 
 	ZeroMemory(&piProcInfo, sizeof(PROCESS_INFORMATION));
-
 	// Set up members of the STARTUPINFO structure. // This structure specifies the STDIN handles for redirection.
 	STARTUPINFO si;
 	ZeroMemory(&si, sizeof(STARTUPINFO));
@@ -96,23 +87,16 @@ void CMainFrame::CreateProcess_EmailSystem()
 	si.hStdOutput = handle_write;// 把管道的写句柄给子进程
 	si.dwFlags |= STARTF_USESTDHANDLES;
 	si.wShowWindow = SW_HIDE;  // 隐藏子进程窗口
-
-
 	//子进程、设置管道句柄的继承
 	wchar_t cmdline[] = _T("EmailSystem.exe");
-
-	ret = CreateProcess(NULL, cmdline, NULL, NULL,
-		TRUE,   // handles are inherited 
+	ret = CreateProcess(NULL, cmdline, NULL, NULL, TRUE,   // handles are inherited 
 		HIGH_PRIORITY_CLASS | CREATE_NO_WINDOW // creation flags
 		, NULL, NULL, &si, &piProcInfo);
 	if (!ret) { pMainFrame->MessageBox(L"创建进程失败"); }
-	else
-	{
+	else {
 		// 把子进程加入到作业中
-
 		HANDLE HandleJob = CreateJobObject(nullptr, nullptr);
-		if (AssignProcessToJobObject(HandleJob, piProcInfo.hProcess))
-		{
+		if (AssignProcessToJobObject(HandleJob, piProcInfo.hProcess)) {
 			JOBOBJECT_EXTENDED_LIMIT_INFORMATION LimitInfo;
 			ZeroMemory(&LimitInfo, sizeof(LimitInfo));
 			LimitInfo.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
@@ -121,24 +105,6 @@ void CMainFrame::CreateProcess_EmailSystem()
 		CloseHandle(piProcInfo.hProcess);
 		CloseHandle(piProcInfo.hThread);
 	}
-
-	/*
-	{
-		DWORD len;
-		char chBuf[BUFSIZE];
-		bool ret = WriteFile(handle_write, chBuf, sizeof(chBuf), &len, NULL);//子进程读了后，父进程才可以继续写入管道
-		if (ret == false)
-		{
-			pMainFrame->MessageBox(L"写入失败");
-		}
-
-		ret = ReadFile(handle_read, chBuf, sizeof(chBuf), &len, NULL);
-		if (ret == false)
-		{
-			pMainFrame->MessageBox(L"读入失败");
-		}
-	}*/
-
 }
 //用来创建二维码进程
 void CMainFrame::CreateProcess_Qrcode(Order& m_Order) {
@@ -152,7 +118,6 @@ void CMainFrame::CreateProcess_Qrcode(Order& m_Order) {
 	si.dwFlags |= STARTF_USESTDHANDLES;
 	si.wShowWindow = SW_SHOW;  // 隐藏子进程窗口
 		//子进程、设置管道句柄的继承
-
 	wchar_t cmdline[2048];
 	wmemset(cmdline, 0, 2048);
 	CStringW a;
@@ -177,6 +142,7 @@ void CMainFrame::CreateProcess_Qrcode(Order& m_Order) {
 	}
 
 }
+
 LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 {
 	CCreateContext Context;
@@ -288,7 +254,6 @@ LRESULT CMainFrame::OnMyChange(WPARAM wParam, LPARAM lParam)
 LRESULT CMainFrame::OnSocket(WPARAM wParam, LPARAM lParam)
 {
 	MySocket* sock = (MySocket*)wParam;
-
 	LVFINDINFO   info;
 	LVITEM lvitem;
 
@@ -313,6 +278,7 @@ void CMainFrame::ParserPkt(MySocket* m_server) {
 	//判断协议
 	switch (pkt[0])
 	{
+		//登录协议
 	case 0x11:
 	{
 		wsprintf(GetBuff, L"%s", pkt + 1);
@@ -331,6 +297,7 @@ void CMainFrame::ParserPkt(MySocket* m_server) {
 		PostMessage(NM_Login, 0, 0);
 		break;
 	}
+	//测试协议
 	case 0x10:
 	{
 		wsprintf(GetBuff, L"%s", pkt + 1);

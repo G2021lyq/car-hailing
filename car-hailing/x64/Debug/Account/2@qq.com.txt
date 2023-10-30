@@ -1,0 +1,1 @@
+Driver ID: 0, Car Model: 1, Current Position: (10, 12), Pick Up Area: (8, 1) - (15, 17)#2@qq.com,无名之辈,NULL,******,这个人很懒，还没有简介#15.56#39.67#0h15min#0#1.00#1.00#3.00#3.00

@@ -90,7 +90,6 @@ void CRegisterDlg::OnBnClickedButton4()
 	}
 
 	//和子进程进行管道通信
-
 	DWORD len;
 	wchar_t chBuf[2048];
 	wsprintf(chBuf, m_Email);

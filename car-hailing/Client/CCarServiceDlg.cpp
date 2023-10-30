@@ -274,7 +274,6 @@ void CCarServiceDlg::OnEnChangeEndposy()
 void CCarServiceDlg::OnBnClickedStartmatch()
 {
 	// TODO: 在此添加控件通知处理程序代码
-
 	//点击开始匹配，将相关信息上传服务器
 	//先把相关信息弹出消息框提示再说
 	CMainFrame* pMainFrame = dynamic_cast<CMainFrame*>(AfxGetMainWnd());

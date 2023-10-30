@@ -1,0 +1,13 @@
+Driver ID: 2, Car Model: 2, Current Position: (19, 7), Pick Up Area: (19, 3) - (20, 12)#1@qq.com,无名之辈,NULL,******,这个人很懒，还没有简介#15.56#39.67#0h15min#0#1.00#1.00#3.00#3.00
+Driver ID: 0, Car Model: 1, Current Position: (14, 13), Pick Up Area: (14, 12) - (19, 14)#1@qq.com,无名之辈,NULL,******,这个人很懒，还没有简介#15.56#39.67#0h15min#0#1.00#1.00#3.00#3.00
+Driver ID: 1, Car Model: 2, Current Position: (8, 9), Pick Up Area: (7, 8) - (8, 9)#1@qq.com,无名之辈,NULL,******,这个人很懒，还没有简介#15.56#39.67#0h15min#0#2.00#2.00#4.00#4.00
+Driver ID: 2, Car Model: 3, Current Position: (3, 14), Pick Up Area: (2, 8) - (3, 15)#1@qq.com,无名之辈,NULL,******,这个人很懒，还没有简介#15.56#39.67#0h15min#0#1.00#1.00#3.00#3.00
+Driver ID: 0, Car Model: 3, Current Position: (14, 9), Pick Up Area: (4, 4) - (14, 14)#passenger#12.30#29.90#0h12min#0#3.00#4.00#5.00#5.00
+Driver ID: 0, Car Model: 3, Current Position: (19, 8), Pick Up Area: (19, 7) - (20, 12)#1@qq.com,无名之辈,NULL,******,这个人很懒，还没有简介#15.56#39.67#0h15min#0#1.00#1.00#3.00#3.00
+Driver ID: 0, Car Model: 2, Current Position: (6, 10), Pick Up Area: (2, 10) - (12, 19)#1@qq.com,无名之辈,NULL,******,这个人很懒，还没有简介#0.00#8.00#0h0min#0#1.00#3.00#1.00#3.00
+Driver ID: 5, Car Model: 1, Current Position: (20, 8), Pick Up Area: (19, 3) - (20, 10)#1@qq.com,无名之辈,NULL,******,这个人很懒，还没有简介#15.56#39.67#0h15min#0#1.00#1.00#3.00#3.00
+Driver ID: 4, Car Model: 1, Current Position: (18, 14), Pick Up Area: (18, 10) - (19, 14)#1@qq.com,无名之辈,NULL,******,这个人很懒，还没有简介#15.56#39.67#0h15min#0#1.00#1.00#3.00#3.00
+Driver ID: 21, Car Model: 2, Current Position: (12, 7), Pick Up Area: (11, 7) - (15, 9)#1@qq.com,无名之辈,NULL,******,这个人很懒，还没有简介#15.56#39.67#0h15min#0#1.00#1.00#3.00#3.00
+Driver ID: 0, Car Model: 1, Current Position: (7, 8), Pick Up Area: (6, 3) - (15, 8)#1@qq.com,无名之辈,NULL,******,这个人很懒，还没有简介#15.56#39.67#0h15min#0#1.00#1.00#3.00#3.00
+Driver ID: 6, Car Model: 3, Current Position: (7, 6), Pick Up Area: (7, 3) - (8, 7)#1@qq.com,无名之辈,NULL,******,这个人很懒，还没有简介#15.56#39.67#0h15min#0#1.00#1.00#3.00#3.00
+Driver ID: 7, Car Model: 2, Current Position: (9, 3), Pick Up Area: (5, 1) - (10, 8)#1@qq.com,无名之辈,NULL,******,这个人很懒，还没有简介#15.56#39.67#0h15min#0#1.00#1.00#3.00#3.00

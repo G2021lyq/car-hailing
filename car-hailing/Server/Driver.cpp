@@ -12,11 +12,11 @@ Driver::Driver(int& count) {
 	carModel = generateRandomCarModel();
 
 	// 生成拉客范围（左上角坐标和右下角坐标的方形）
-	pickUpAreaLeftTopX = generateRandomCoordinate(1, 19);
-	pickUpAreaLeftTopY = generateRandomCoordinate(1, 14);
-	pickUpAreaRightBottomX = generateRandomCoordinate(pickUpAreaLeftTopX + 1, 20);
-	pickUpAreaRightBottomY = generateRandomCoordinate(pickUpAreaLeftTopY + 1, 20);
-
+	pickUpAreaLeftTopX = generateRandomCoordinate(1, 19 - 5);
+	pickUpAreaLeftTopY = generateRandomCoordinate(1, 14 - 5);
+	pickUpAreaRightBottomX = generateRandomCoordinate(pickUpAreaLeftTopX + 1, 20 - 5);
+	pickUpAreaRightBottomY = generateRandomCoordinate(pickUpAreaLeftTopY + 1, 15 - 5);
+	srand(static_cast<unsigned int>(time(nullptr))); // 使用当前时间作为种子
 	// 生成随机当前位置（位置用 xy 坐标表示，范围 拉客范围）
 	currentPositionX = generateRandomCoordinate(pickUpAreaLeftTopX, pickUpAreaRightBottomX);
 	currentPositionY = generateRandomCoordinate(pickUpAreaLeftTopY, pickUpAreaRightBottomY);

@@ -27,6 +27,5 @@ std::string GetLocalIPv4Address() {
 			free(adaptersAddresses);
 		}
 	}
-
 	return ipAddress;
 }

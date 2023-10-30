@@ -36,6 +36,28 @@ void MyFile::SetFilePathAccount(std::wstring FilePath, CString _Path)
 	}
 }
 
+bool MyFile::FileWithLock()
+{
+	fileHandle = CreateFile(Path.c_str(), GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (fileHandle == INVALID_HANDLE_VALUE) {
+		std::wcerr << L"Failed to open file." << std::endl;
+		return false;
+	}
+	return true;
+}
+
+bool MyFile::LockFile()
+{
+	if (lockHandle == nullptr) {
+		//lockHandle = CreateFile(fileHandle, 0, 0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+		if (lockHandle == INVALID_HANDLE_VALUE) {
+			std::wcerr << L"File is already locked by another process." << std::endl;
+			return false;
+		}
+	}
+	return true;
+}
+
 void MyFile::OpenFile()
 {
 	//打开读文件

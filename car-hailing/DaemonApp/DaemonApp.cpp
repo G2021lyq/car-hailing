@@ -34,25 +34,20 @@ int main()
 {
 	//关闭交互
 	ShowWindow(GetConsoleWindow(), SW_HIDE);
-
 	//设置本地环境为中文
 	setlocale(LC_ALL, "chs");
 	//判断ini文件是否存在
 	bool bExist = PathFileExists(L"./Setting.ini");
 	wchar_t szBuf[MAX_PATH] = { 0 };
-
 	//获取报错的名字
 	::GetPrivateProfileString(L"AppSetting", L"CheckAppName", L"osk.exe", szBuf, MAX_PATH, L"./Setting.ini");
 	std::wstring strCheckAppName = szBuf;
-
 	//获取守护的名字
 	::GetPrivateProfileString(L"AppSetting", L"RunAppName", L"Server.exe", szBuf, MAX_PATH, L"./Setting.ini");
 	std::wstring strRunAppName = szBuf;
-
 	//获取守护的路径（用于去打开守护的进程）
 	::GetPrivateProfileString(L"AppSetting", L"AppFullPath", L"Server.exe", szBuf, MAX_PATH, L"./Setting.ini");
 	std::wstring strAppFullPath = szBuf;
-
 	//获取每次的休眠时间
 	int nCycleTime = GetPrivateProfileIntW(L"AppSetting", L"CycleTime", 3000, L"./Setting.ini");
 	if (nCycleTime < 3000)
@@ -70,7 +65,6 @@ int main()
 		//检测两个进程是否存活
 		bool bFind1 = FindProcessW(strCheckAppName);
 		bool bFind2 = FindProcessW(strRunAppName);
-
 		//如果报错没有出现，守护依然活着
 		if (bFind1 == false && bFind2 == true)
 		{
@@ -78,7 +72,6 @@ int main()
 			Sleep(nCycleTime);
 			continue;
 		}
-
 		//如果报错出现
 		if (bFind1)
 		{
@@ -92,7 +85,6 @@ int main()
 			Sleep(nCycleTime);
 			continue;
 		}
-
 		//如果守护没有活
 		if (bFind2 == false)
 		{
@@ -103,15 +95,12 @@ int main()
 				//使用shell的方法去打开进程
 				ShellExecute(NULL, _T("open"), strAppFullPath.c_str(), _T("open"), NULL, SW_SHOWDEFAULT);
 			}
-			else
-			{
+			else {
 				DbgInfoW(L"启动进程不存在！");
 			}
 			Sleep(nCycleTime);
-
 			continue;
 		}
-
 		Sleep(nCycleTime);
 	} while (1);
 

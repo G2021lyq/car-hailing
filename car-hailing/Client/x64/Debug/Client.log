@@ -1,0 +1,26 @@
+﻿  pch.cpp
+  Account.cpp
+  CCarContinueDlg.cpp
+D:\我的电脑\Downloads\car-hailing-7921\car-hailing-792123c59c3ab7e9626ed764002cc3e5ef74c296\car-hailing\Client\CCarContinueDlg.cpp(73,34): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+D:\我的电脑\Downloads\car-hailing-7921\car-hailing-792123c59c3ab7e9626ed764002cc3e5ef74c296\car-hailing\Client\CCarContinueDlg.cpp(74,34): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+D:\我的电脑\Downloads\car-hailing-7921\car-hailing-792123c59c3ab7e9626ed764002cc3e5ef74c296\car-hailing\Client\CCarContinueDlg.cpp(75,32): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+D:\我的电脑\Downloads\car-hailing-7921\car-hailing-792123c59c3ab7e9626ed764002cc3e5ef74c296\car-hailing\Client\CCarContinueDlg.cpp(76,32): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+  CCarServiceDlg.cpp
+  CDisplayView.cpp
+  CHistoryDlg.cpp
+  Client.cpp
+  ClientDoc.cpp
+  ClientView.cpp
+  CLoginDlg.cpp
+  CRegisterDlg.cpp
+  CSelectView.cpp
+  CUserDlg.cpp
+  Driver.cpp
+  MainFrm.cpp
+D:\我的电脑\Downloads\car-hailing-7921\car-hailing-792123c59c3ab7e9626ed764002cc3e5ef74c296\car-hailing\Client\MainFrm.cpp(292,15): warning C4101: “info”: 未引用的局部变量
+D:\我的电脑\Downloads\car-hailing-7921\car-hailing-792123c59c3ab7e9626ed764002cc3e5ef74c296\car-hailing\Client\MainFrm.cpp(293,9): warning C4101: “lvitem”: 未引用的局部变量
+D:\我的电脑\Downloads\car-hailing-7921\car-hailing-792123c59c3ab7e9626ed764002cc3e5ef74c296\car-hailing\Client\MainFrm.cpp(429,12): warning C4244: “初始化”: 从“INT_PTR”转换到“int”，可能丢失数据
+  MySocket.cpp
+  Order.cpp
+  正在生成代码...
+  Client.vcxproj -> D:\我的电脑\Downloads\car-hailing-7921\car-hailing-792123c59c3ab7e9626ed764002cc3e5ef74c296\car-hailing\x64\Debug\Client.exe

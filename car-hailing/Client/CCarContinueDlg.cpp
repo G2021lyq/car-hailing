@@ -128,13 +128,17 @@ LRESULT CCarContinueDlg::OnMyChange(WPARAM wParam, LPARAM lParam)
 }
 
 
-void CCarContinueDlg::OnTimer(UINT_PTR nIDEvent) {
+void CCarContinueDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
 	UpdateData(true);
 	CDC* pdc = GetDlgItem(IDC_STATIC)->GetWindowDC();
 	CBrush* pOdBrs = pdc->SelectObject(&m_brush[0]);
 	// cpen可以把边描成白色，但是部分线看不清楚
 	//CPen* pOldPen = pdc->SelectObject(&m_pen);
-	if (!m_ispicked) {
+	if (!m_ispicked)
+	{
 		pdc->Rectangle(m_map[driver[0] - 1][driver[1] - 1]);
 		pdc->SelectObject(pOdBrs);
 		if (start[0] < driver[0]) driver[0] -= 1;
@@ -151,6 +155,7 @@ void CCarContinueDlg::OnTimer(UINT_PTR nIDEvent) {
 			m_ispicked = true;
 	}
 	else {
+
 		pdc->Rectangle(m_map[start[0] - 1][start[1] - 1]);
 		pdc->SelectObject(pOdBrs);
 
@@ -164,7 +169,9 @@ void CCarContinueDlg::OnTimer(UINT_PTR nIDEvent) {
 		pdc->SelectObject(&m_brush[1]);
 		pdc->Rectangle(m_map[start[0] - 1][start[1] - 1]);
 		pdc->DeleteDC();
-		if (start[1] == m_end[1] && start[0] == m_end[0]) {
+
+		if (start[1] == m_end[1] && start[0] == m_end[0])
+		{
 			KillTimer(1);
 			//可以加 结束行程flag
 			CString myString;
@@ -176,5 +183,9 @@ void CCarContinueDlg::OnTimer(UINT_PTR nIDEvent) {
 			Sleep(100);
 		}
 	}
+
+
+
+
 	CFormView::OnTimer(nIDEvent);
 }

@@ -1,0 +1,14 @@
+﻿  data code.cpp
+D:\我的电脑\Downloads\car-hailing-7921\car-hailing-792123c59c3ab7e9626ed764002cc3e5ef74c296\car-hailing\Qrcode\data code.cpp(177,34): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+  error correction.cpp
+  Format and Version.cpp
+D:\我的电脑\Downloads\car-hailing-7921\car-hailing-792123c59c3ab7e9626ed764002cc3e5ef74c296\car-hailing\Qrcode\Format and Version.cpp(121,26): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+  main.cpp
+  Mask.cpp
+  Module Placement.cpp
+  Screen output.cpp
+  strctureData.cpp
+  wiinip.cpp
+D:\我的电脑\Downloads\car-hailing-7921\car-hailing-792123c59c3ab7e9626ed764002cc3e5ef74c296\car-hailing\Qrcode\wiinip.cpp(22,19): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  正在生成代码...
+  Qrcode.vcxproj -> D:\我的电脑\Downloads\car-hailing-7921\car-hailing-792123c59c3ab7e9626ed764002cc3e5ef74c296\car-hailing\x64\Debug\Qrcode.exe

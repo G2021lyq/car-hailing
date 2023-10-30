@@ -1,0 +1,21 @@
+﻿  pch.cpp
+  Account.cpp
+  Driver.cpp
+  HistoryRecord.cpp
+  MyFile.cpp
+  MySocket.cpp
+  Order.cpp
+  Server.cpp
+  ServerDlg.cpp
+D:\我的电脑\Downloads\car-hailing-7921\car-hailing-792123c59c3ab7e9626ed764002cc3e5ef74c296\car-hailing\Server\ServerDlg.cpp(425,41): warning C4311: “类型强制转换”: 从“MySocket *”到“DWORD”的指针截断
+D:\我的电脑\Downloads\car-hailing-7921\car-hailing-792123c59c3ab7e9626ed764002cc3e5ef74c296\car-hailing\Server\ServerDlg.cpp(425,41): warning C4302: “类型强制转换”: 从“MySocket *”到“DWORD”截断
+D:\我的电脑\Downloads\car-hailing-7921\car-hailing-792123c59c3ab7e9626ed764002cc3e5ef74c296\car-hailing\Server\ServerDlg.cpp(376,12): warning C4101: “s”: 未引用的局部变量
+D:\我的电脑\Downloads\car-hailing-7921\car-hailing-792123c59c3ab7e9626ed764002cc3e5ef74c296\car-hailing\Server\ServerDlg.cpp(604,31): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+D:\我的电脑\Downloads\car-hailing-7921\car-hailing-792123c59c3ab7e9626ed764002cc3e5ef74c296\car-hailing\Server\ServerDlg.cpp(610,43): warning C4311: “类型强制转换”: 从“MySocket *”到“DWORD”的指针截断
+D:\我的电脑\Downloads\car-hailing-7921\car-hailing-792123c59c3ab7e9626ed764002cc3e5ef74c296\car-hailing\Server\ServerDlg.cpp(610,43): warning C4302: “类型强制转换”: 从“MySocket *”到“DWORD”截断
+  ShowDlg.cpp
+D:\我的电脑\Downloads\car-hailing-7921\car-hailing-792123c59c3ab7e9626ed764002cc3e5ef74c296\car-hailing\Server\ShowDlg.cpp(58,11): warning C4244: “初始化”: 从“LPARAM”转换到“int”，可能丢失数据
+D:\我的电脑\Downloads\car-hailing-7921\car-hailing-792123c59c3ab7e9626ed764002cc3e5ef74c296\car-hailing\Server\ShowDlg.cpp(65,11): warning C4244: “初始化”: 从“LPARAM”转换到“int”，可能丢失数据
+D:\我的电脑\Downloads\car-hailing-7921\car-hailing-792123c59c3ab7e9626ed764002cc3e5ef74c296\car-hailing\Server\ShowDlg.cpp(72,11): warning C4244: “初始化”: 从“LPARAM”转换到“int”，可能丢失数据
+  正在生成代码...
+  Server.vcxproj -> D:\我的电脑\Downloads\car-hailing-7921\car-hailing-792123c59c3ab7e9626ed764002cc3e5ef74c296\car-hailing\x64\Debug\Server.exe
